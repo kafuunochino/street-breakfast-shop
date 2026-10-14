@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { INGREDIENTS, RECIPES, STAGES, CUSTOMERS, initialState, emptyDish, getOrder, requiredIngredients, evaluateDish, reduce, stageStars, DEFAULT_PROGRESS, parseProgress, recordStage } from '../game.js';
+import { INGREDIENTS, RECIPES, STAGES as ALL_STAGES, CUSTOMERS, initialState, emptyDish, getOrder, requiredIngredients, evaluateDish, reduce, stageStars, DEFAULT_PROGRESS, parseProgress, recordStage } from '../game.js';
+import {solveShift} from './helpers/shift-plan.js';
+const STAGES=ALL_STAGES.slice(0,5);
 
 function prepare(state, override = {}) {
   const order = getOrder(state);
@@ -44,7 +46,7 @@ test('all five stages and 19 explicit orders reference valid recipes and people'
 });
 
 test('invalid initial stage numbers safely fall back to first stage', () => {
-  for (const stage of [-1, 5, 2.4, null, '3', NaN, Infinity]) assert.equal(initialState(stage).stage, 0);
+  for (const stage of [-1, 50, 2.4, null, '3', NaN, Infinity]) assert.equal(initialState(stage).stage, 0);
   assert.equal(initialState(4).stage, 4);
 });
 
@@ -200,7 +202,7 @@ test('stage cannot advance early and final stage cannot overflow', () => {
   const initial = initialState();
   assert.equal(reduce(initial, { type: 'NEXT_STAGE' }), initial);
   assert.equal(reduce(completeStage(0), { type: 'NEXT_STAGE' }).stage, 1);
-  const final = completeStage(4);
+  const final = solveShift(49).state;
   assert.equal(reduce(final, { type: 'NEXT_STAGE' }), final);
 });
 
@@ -223,7 +225,7 @@ test('broken, missing and unknown-version saves fall back safely', () => {
 
 test('progress parser sanitizes values and drops unknown fields', () => {
   const p = parseProgress(JSON.stringify({ version: 1, unlocked: 42, stars: [-1, 2, 99, '3'], best: [150, -5, 10001, null, 600], sound: 'yes', injected: true }));
-  assert.equal(p.unlocked, 0); assert.deepEqual(p.stars, [0, 2, 0, 0, 0]); assert.deepEqual(p.best, [150, 0, 0, 0, 600]); assert.equal(p.sound, true); assert.equal(p.injected, undefined);
+  assert.equal(p.unlocked, 0); assert.deepEqual(p.stars.slice(0,5), [0, 2, 0, 0, 0]); assert.deepEqual(p.best.slice(0,5), [150, 0, 0, 0, 600]); assert.equal(p.sound, true); assert.equal(p.injected, undefined);
 });
 
 test('recording complete stages unlocks next and preserves better results', () => {
@@ -235,14 +237,14 @@ test('recording complete stages unlocks next and preserves better results', () =
   const replay = recordStage(saved, { ...complete, mistakes: 30, score: 0 });
   assert.deepEqual(replay, saved);
   const last = recordStage(saved, completeStage(4));
-  assert.equal(last.unlocked, 4);
+  assert.equal(last.unlocked, 5);
 });
 
 test('final save survives serialization and keeps sound preference', () => {
   let p = { ...parseProgress(null), sound: false };
   for (let i = 0; i < 5; i++) p = recordStage(p, completeStage(i));
   assert.deepEqual(parseProgress(JSON.stringify(p)), p);
-  assert.deepEqual(p.stars, [3, 3, 3, 3, 3]); assert.equal(p.sound, false);
+  assert.deepEqual(p.stars.slice(0,5), [3, 3, 3, 3, 3]); assert.equal(p.sound, false);
 });
 
 test('every recipe rejects every extra ingredient when cooked, then clears free and serves the correct current order',()=>{

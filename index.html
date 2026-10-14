@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eee8d9"><title>街角早餐铺 · 0.2.0 街摊版</title><link rel="icon" href="data:,"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#d9bd87}canvas{--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);display:block;width:100vw;height:100dvh;touch-action:none;user-select:none;-webkit-user-select:none}</style></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eee8d9"><title>街角早餐铺 · 0.3.0 高峰50班</title><link rel="icon" href="data:,"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#d9bd87}canvas{--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);display:block;width:100vw;height:100dvh;touch-action:none;user-select:none;-webkit-user-select:none}</style></head>
 <body><canvas id="screen" aria-label="街角早餐铺试玩版。点选食材、选择火候、煎制并出餐。当前 Canvas 原型使用触控或鼠标操作。">需要支持 Canvas 2D 的浏览器。</canvas><script type="module">
 import {createBrowserPlatform} from './adapters/browser.js';
+import {createRewardedService} from './adapters/rewarded.js';
 import {startGame} from './src/main.js';
 const names=['tap','cook','success','error','complete'];
 const platform=createBrowserPlatform(document.querySelector('canvas'),window,Object.fromEntries(names.map(name=>[name,`./assets/${name}.wav`])));
+platform.rewards=createRewardedService({mode:'mock',timers:{setTimeout:window.setTimeout,clearTimeout:window.clearTimeout}});
 const game=startGame(platform);
 // Read-only diagnostic handle for regression tests. It cannot inject game actions.
 window.breakfastGame={inspect:()=>game.inspect()};

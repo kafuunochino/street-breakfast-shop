@@ -1,15 +1,16 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "reviewedOn": "2026-10-14",
-  "sourceRulesUnchanged": true,
-  "sourceRulesSha256": "928386acae25685fb24ae67400ab48d0a5e449d7da4c15859fcb8c02f718c937",
-  "nodeTestsPassed": 73,
+  "nodeTestsPassed": 183,
   "nodeTestsFailed": 0,
+  "shifts": 50,
+  "meals": 286,
+  "referencePlansPassed": 50,
   "actualBrowserValidated": false,
   "realPhoneValidated": false,
   "officialDouyinRuntimeValidated": false,
   "uploaded": false,
-  "nativePixelRenderer": "Existing Linux @napi-rs/canvas, Noto Sans CJK regular/bold fonts; host and input simulated. These are not browser screenshots.",
+  "nativePixelRenderer": "Existing Linux @napi-rs/canvas, registered Noto Sans CJK regular/bold fonts; exact inline HTML with simulated browser host and input. These are not browser screenshots.",
   "coveredScreens": [
     "welcome",
     "day",
@@ -23,7 +24,12 @@
     "restart",
     "sidebar",
     "result",
-    "ending"
+    "ending",
+    "queue",
+    "holding",
+    "tools",
+    "failure",
+    "mock-reward"
   ],
   "viewportCases": [
     {
@@ -85,25 +91,29 @@
     }
   ],
   "checks": [
-    "All interactive targets at least 44 logical viewport pixels, inside safe bounds and mutually non-overlapping.",
-    "All 19 orders complete via real Canvas pointer handlers, including deliberate extra-ingredient cooked mistakes and recovery.",
-    "Exact inline offline HTML runs with 320x568 top92/bottom34 and nonzero client offset.",
-    "Station changes continue cooking; nested menus pause; resume keeps progress.",
-    "Clear available from every station in raw/cooking/cooked/served, preserves score/order and rejects stale completion.",
-    "All visible controls live in Canvas; HTML body contains only Canvas and bootstrap.",
-    "Native pixel review fixed title/sign overlap, footer overlay, chapter overlap, and ending text spacing."
+    "50 initial shifts solve without ads or tools through pure rules, Canvas pointer handlers and exact inline HTML browser adapter events.",
+    "All 19 tutorial orders tolerate deliberate extra-ingredient cooked mistakes, explicit rejection, visible redo and correct serving.",
+    "Player-caused fuel, patience and freshness failures give explicit causes and retain free restart.",
+    "Currency and stock caps, one-use tools, single settlement, stale request isolation, cancelled/error/no-fill mock outcomes tested.",
+    "An unfinished paid-effect receipt is refunded once on reload/restart; victory settles it; bought unused stock stays owned; persistence failure grants no paid effect.",
+    "Exact browser-adapter drag-out-and-back, lost capture and blur cannot activate start, purchases or coin revivals; ordinary taps work.",
+    "All inspected actionable controls remain inside safe bounds, >=44 CSS pixels and mutually nonoverlapping at tested sizes.",
+    "Native CJK pixels reviewed for queue/prep, cooking, holding, tools, failure and mock screens."
   ],
-  "offlineHtmlSha256": "807365cab87ff2a78eb623ab7f5b22b80859ee90d7ffae6c3b2d5382c863bf0b",
-  "douyinManifestSha256": "f79a996490dd5798aa1210ae0d58b25fa7d8871dcb38fffb22a301411001364c",
+  "offlineHtmlSha256": "604778b7ffa42efcd187413212b8d6b3e0c530e7ea2afb4c9c5d2eae4b34ccff",
+  "douyinManifestSha256": "58ad064830b370aad270d85dbe8bbb71f874a6151f9ccda0dd3cc077c9be44dd",
+  "sourceRulesSha256": "327eb3199565f95c267eb9963fff9547fa0de12c5a988097b5b64cac75bf6675",
   "nativePixelExamples": {
-    "320-ending-native-not-browser.png": "03875c321b352007cd0031ca4721c7aaf26aaedf5d21159e8dc28a24483863f2",
-    "390-cook-native-not-browser.png": "0d987c367343d8c86d26825f8490c9d972466bd44a786eef064ff0dd35a7197d",
-    "390-prep-native-not-browser.png": "cbc3e70ca0984d0b5f8a0ec790614320039504a61e6e54a6c448ff3088d3ab9e",
-    "390-serve-native-not-browser.png": "21be341619ae963600af1035a32619a0076db8ce96a5a5037b79ac76e00e6afc"
+    "320-failure-native-not-browser.png": "f0520358b301c009c5936cccce2f20a06977a86563e61881daa468a9f18c0fe9",
+    "320-mock-native-not-browser.png": "916c0251e671603fcbad6598ea271edb587e61f1446e6453580cd94a4e1b0051",
+    "320-tools-native-not-browser.png": "b96e871e04edb99946214b5961f86507678c670841a1eaa71d5fdb45250f31d5",
+    "390-cooking-native-not-browser.png": "f712f0843f466b7adad31515b3cd12ff001aa4136dd786d2fcbad750a5390027",
+    "390-hold-native-not-browser.png": "e869c28fb801ffece5bbcddddc9581ccaab1f5f1613b9eb60172244441fa4352",
+    "390-queue-prep-native-not-browser.png": "49c865bc84a89b5ad0fab30d59099c6a6bcbfb671ad7c96ac914baaa15d39d9c"
   },
   "independentReview": {
     "passed": true,
-    "exactOfflineSha256": "807365cab87ff2a78eb623ab7f5b22b80859ee90d7ffae6c3b2d5382c863bf0b",
-    "scope": "Read-only review of exact inline HTML with simulated host and native Canvas pixels, five viewports including 320x568 top92/bottom34, all menu geometry, 19 deliberate extra-ingredient mistakes and recovery, station and lifecycle timing; final narrow ending pixels inspected. Not a browser or real-device test."
+    "exactOfflineSha256": "604778b7ffa42efcd187413212b8d6b3e0c530e7ea2afb4c9c5d2eae4b34ccff",
+    "scope": "Independent read-only replay of exact HTML: all50 shifts without tools/revival,800 coins; once-only tool and coin-revival refund after reload; four mock results and restart before completion; drag cancellation and ordinary taps;320x568 top92/bottom34 late-stage targets and native CJK pixels. Not real-browser, real-device, or ad-SDK validation."
   }
 }

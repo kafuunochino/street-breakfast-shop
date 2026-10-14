@@ -25,3 +25,17 @@ Adapters are copied from the shared runtime proof. A source adapter is not offic
 ## Optional Douyin sidebar
 
 `platform.sidebar` may provide `getState()`, `subscribe(fn)`, `navigate()` and `destroy()`. The generated tt entry registers this feature synchronously before creating the Canvas. The renderer shows a real Canvas CTA only when available; an explicit confirmation button calls navigation. Returning via sidebar is determined by the latest exact onShow fields, never navigation success, and no reward is promised. Browser platforms may omit the feature entirely.
+
+## Rewarded continuation hook (0.3.0)
+
+Optional `platform.rewards` exposes `getState()`, `request({placement, context})`, `cancel()`, `destroy()`; mock mode additionally exposes `resolveMock(status)`. Requests resolve `{status, requestId}` and never award game resources themselves. The renderer accepts completed results only for its exact active runId/failureId/request token and a failed round that has not already used its one continuation.
+
+Browser/offline explicitly inject mock mode and draw all four result choices in Canvas. The TT bootstrap injects a default-disabled service with no ad ID. Host pause/resume stops drawing/cooking but does not cancel a pending ad. Starting a new round cancels and invalidates old callbacks. Failure always offers a free restart. Coin continuation is an atomic separate path and shares the once-per-round cap. See docs/REWARDED_AD_CONTRACT.md before any future live activation.
+
+## Fifty-shift state
+
+The same pure reducer owns queue selection, fuel, cooking-turn patience, held meals and paired serving. Cooking turns advance only on COOK, not pointer events, waiting, menus, or wall-clock time. Visible-arrival records ensure newly shown guests have a clear first chance. Renderer animation time affects only illustrations and actual pan heat progress. Saves use content version2 under the existing key, carrying completed shifts, currency, limited inventory and monotonic round IDs, not the unfinished board.
+
+Unfinished boards restart on reload; a sanitized `pendingSpend` receipt persists any consumed tool / coin continuation together with its debit. Reload or an explicit new run returns those resources once, while successful completion clears the receipt without refund. Bought but unused inventory remains owned. Paid effects are applied only after the same storage write succeeds. Tool overflow during refund returns its purchase price instead of exceeding the inventory cap.
+
+A press that moves more than12 viewport/CSS pixels remains cancelled even if it returns to the button. The browser adapter maps lost capture and window blur to pointer cancellation. Pointer identity remains owned until release/cancel; normal taps and multi-touch isolation are separately covered through the exact offline HTML.

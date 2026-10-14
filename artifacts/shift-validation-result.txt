@@ -1,0 +1,5 @@
+
+> street-breakfast-shop@0.3.0 validate:shifts
+> node scripts/validate-shifts.mjs
+
+Validated 50/50 initial shifts, no tools or ad revives.

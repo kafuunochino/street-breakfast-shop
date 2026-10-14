@@ -5,7 +5,7 @@ export function createBrowserPlatform(canvas, host = window, audioPaths = {}) {
   const emit = (name, value) => listeners[name].forEach(fn => fn(value));
   const subscribe = name => fn => { listeners[name].add(fn); return () => listeners[name].delete(fn); };
   const listen = (target, name, fn) => { target.addEventListener(name, fn); removers.push(() => target.removeEventListener(name, fn)); };
-  let size;
+  let size;const activePointers=new Set();
   function resize() {
     const rect = canvas.getBoundingClientRect();
     const style = host.getComputedStyle?.(canvas);
@@ -19,11 +19,14 @@ export function createBrowserPlatform(canvas, host = window, audioPaths = {}) {
   listen(host, 'resize', resize);
   for (const [event, type] of [['pointerdown','down'],['pointermove','move'],['pointerup','up'],['pointercancel','cancel']]) {
     listen(canvas, event, e => {
-      if (type === 'down') canvas.setPointerCapture?.(e.pointerId);
+      if (type === 'down') { activePointers.add(e.pointerId);try { canvas.setPointerCapture?.(e.pointerId); } catch { /* Capture may be unavailable on an interrupted touch. */ } }
+      if(type==='up'||type==='cancel')activePointers.delete(e.pointerId);
       const rect = canvas.getBoundingClientRect();
       emit('pointer', { type, x: (e.clientX - rect.left) * size.width / rect.width, y: (e.clientY - rect.top) * size.height / rect.height, id: e.pointerId });
     });
   }
+  listen(canvas,'lostpointercapture',e=>{activePointers.delete(e.pointerId);emit('pointer',{type:'cancel',id:e.pointerId,x:0,y:0});});
+  listen(host,'blur',()=>{for(const id of activePointers)emit('pointer',{type:'cancel',id,x:0,y:0});activePointers.clear();});
   let muted = false;
   const sounds = new Map();
   const audio = {

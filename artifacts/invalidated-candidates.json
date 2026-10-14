@@ -20,9 +20,19 @@
       "uploadAllowed": false,
       "reason": "Superseded by the user-requested mobile-first in-Canvas street-stall UI. The 0.1.1 recipe recovery fix is preserved unchanged.",
       "uploadStatus": "No upload is performed by this source task."
+    },
+    {
+      "version": "0.2.0",
+      "sourceCommit": "3c8f1e1a0ab5440ffa2b8c333a345ef01255ef75",
+      "manifestSha256": "f79a996490dd5798aa1210ae0d58b25fa7d8871dcb38fffb22a301411001364c",
+      "gameJsSha256": "a0261c6344eaecb15a6c8586cc20e933d956e22a091bc4277a876cd4679a7940",
+      "offlineHtmlSha256": "807365cab87ff2a78eb623ab7f5b22b80859ee90d7ffae6c3b2d5382c863bf0b",
+      "uploadAllowed": false,
+      "reason": "Superseded by 50-shift queue/heat/holding challenges, limited coin economy and explicit mock rewarded hooks. Free redo remains available.",
+      "uploadStatus": "This source task has not uploaded any breakfast platform build."
     }
   ],
-  "replacementVersion": "0.2.0",
+  "replacementVersion": "0.3.0",
   "replacementManifest": "artifacts/douyin-candidate-manifest.json",
   "rule": "Do not upload or redeliver an invalidated candidate; verify the replacement source commit and exact file hashes first."
 }

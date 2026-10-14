@@ -1,0 +1,22 @@
+
+> street-breakfast-shop@0.3.0 build:offline
+> node scripts/build-offline.mjs
+
+{
+  "output": "/workspace/shared/street-breakfast-shop/dist/breakfast-demo.html",
+  "info": {
+    "version": "0.3.0",
+    "file": "breakfast-demo.html",
+    "sha256": "604778b7ffa42efcd187413212b8d6b3e0c530e7ea2afb4c9c5d2eae4b34ccff",
+    "bytes": 122126,
+    "sources": {
+      "game.js": "327eb3199565f95c267eb9963fff9547fa0de12c5a988097b5b64cac75bf6675",
+      "src/canvas-art.js": "e497a62f2f48b774f8ff3c2ed685a18aab9a28c4e7424efc2b8fc6292dc66f7e",
+      "src/main.js": "04f695edf1808580e0a8ec4f60187636cc4142fd5a3f1ebe9d1dc290df6e7e33",
+      "adapters/browser.js": "3e78e20c9ef61c0c7045f1b9edf25253f4170bcc2f44ef5f58e64de4bd0ba233",
+      "adapters/rewarded.js": "e83bf601d941b7603b5bccbe29354e7a1c894105f1ec3794995d6da372d9acc7"
+    },
+    "actualBrowserQa": false,
+    "realDeviceQa": false
+  }
+}

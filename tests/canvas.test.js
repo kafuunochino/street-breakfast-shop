@@ -1,18 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { startGame } from '../src/main.js';
+import { createRewardedService } from '../adapters/rewarded.js';
+import { parseProgress } from '../game.js';
 import { createDouyinSidebar } from '../adapters/douyin-sidebar.js';
-function harness({ failStorage = false, sidebar = undefined, width = 390, height = 780, safeInsets = undefined } = {}) {
+function harness({ failStorage = false, sidebar = undefined, width = 390, height = 780, safeInsets = undefined, saved = undefined, rewards = undefined } = {}) {
   const context=new Proxy({measureText:text=>({width:text.length*9})},{get:(obj,key)=>key in obj?obj[key]:()=>{},set:(obj,key,value)=>(obj[key]=value,true)});
-  const callbacks={},frames=new Map(),store=new Map();let frame=0,clock=0;
+  const callbacks={},frames=new Map(),store=new Map(saved?[['street-breakfast-shop:progress:v1',JSON.stringify(saved)]]:[]);let frame=0,clock=0;
   const platform={canvas:{getContext:()=>context},getSize:()=>({width,height,dpr:1,safeInsets}),onPointer:fn=>{callbacks.pointer=fn;return()=>delete callbacks.pointer;},onResize:fn=>{callbacks.resize=fn;return()=>delete callbacks.resize;},onPause:fn=>{callbacks.pause=fn;return()=>delete callbacks.pause;},onResume:fn=>{callbacks.resume=fn;return()=>delete callbacks.resume;},requestFrame:fn=>{frames.set(++frame,fn);return frame;},cancelFrame:id=>frames.delete(id),storage:{getItem:key=>{if(failStorage)throw Error('denied');return store.get(key)||null;},setItem:(key,value)=>{if(failStorage)throw Error('denied');store.set(key,value);}},audio:{play(){},setMuted(){}}};
-  if(sidebar)platform.sidebar=sidebar;
+  if(sidebar)platform.sidebar=sidebar;if(rewards)platform.rewards=rewards;
   const game=startGame(platform);
   function point(id,type='down',pointer=1){const b=game.inspect().buttons.find(b=>b.id===id);assert.ok(b,`button ${id} exists`);const {zoom,ox,oy}=game.inspect().viewport;callbacks.pointer({type,x:ox+(Number(b.x)+b.w/2)*zoom,y:oy+(b.y+b.h/2)*zoom,id:pointer});}
   function click(id){
     if(!game.inspect().buttons.some(b=>b.id===id)){
-      const tab=id.startsWith('ingredient-')||id==='recipes'?'tab-prep':id.startsWith('texture-')||id==='cook'?'tab-cook':id.startsWith('package-')||id==='serve'?'tab-serve':null;
-      if(tab&&game.inspect().screen==='play')click(tab);else if(['chapters','restart','sidebar-open'].includes(id)&&game.inspect().screen==='play')click('menu');
+      const tab=id.startsWith('ingredient-')||id==='recipes'?'tab-prep':id.startsWith('texture-')||id==='cook'?'tab-cook':id.startsWith('package-')||id==='serve'||id==='hold'||id==='take-held'?'tab-serve':null;
+      if(tab&&game.inspect().screen==='play')click(tab);else if(['chapters','restart','sidebar-open','tools'].includes(id)&&game.inspect().screen==='play')click('menu');
     }
     point(id,'down');point(id,'up');
   }
@@ -37,7 +39,7 @@ test('pause stops frame scheduling and resume restarts exactly one frame loop',(
 
 test('all 19 orders complete through actual Canvas button pointer handlers',async()=>{
   const {STAGES,requiredIngredients}=await import('../game.js');const h=harness();open(h);
-  for(let stage=0;stage<STAGES.length;stage++){
+  for(let stage=0;stage<5;stage++){
     for(const order of STAGES[stage].orders){
       for(const id of requiredIngredients(order))h.click(`ingredient-${id}`);
       h.click(`texture-${order.texture}`);h.click(`package-${order.packaging}`);h.click('cook');h.tick(2100);
@@ -46,8 +48,8 @@ test('all 19 orders complete through actual Canvas button pointer handlers',asyn
     assert.equal(h.game.inspect().screen,'result');assert.equal(h.game.inspect().progress.stars[stage],3);
     h.click('next-stage');if(stage<4)h.click('open-day');
   }
-  assert.equal(h.game.inspect().screen,'ending');assert.equal(h.game.inspect().progress.stars.reduce((a,b)=>a+b,0),15);
-  h.click('replay-all');h.click('chapter-0');h.click('open-day');assert.equal(h.game.inspect().state.stage,0);h.game.destroy();
+  assert.equal(h.game.inspect().screen,'day');assert.equal(h.game.inspect().progress.stars.reduce((a,b)=>a+b,0),15);
+  h.click('open-day');h.click('chapters');h.click('chapter-0');h.click('open-day');assert.equal(h.game.inspect().state.stage,0);h.game.destroy();
 });
 
 test('a second finger cannot steal or cancel the active first-finger gesture',()=>{const h=harness();open(h);h.point('ingredient-egg','down',1);h.point('ingredient-batter','down',2);h.callbacks.pointer({type:'cancel',x:0,y:0,id:2});h.point('ingredient-egg','up',1);h.point('ingredient-batter','up',2);assert.deepEqual(h.game.inspect().state.dish.ingredients,['egg']);h.game.destroy();});
@@ -139,7 +141,7 @@ test('menu restart requires an explicit choice and preserves saved progress and 
 
 test('safe narrow screen completes all 19 deliberately incorrect cooked dishes and recovers with visible controls',async()=>{
   const {STAGES,INGREDIENTS,requiredIngredients}=await import('../game.js');const width=320,height=568,safeInsets={top:72,bottom:34};const h=harness({width,height,safeInsets});open(h);
-  for(let stage=0;stage<STAGES.length;stage++){
+  for(let stage=0;stage<5;stage++){
     for(const order of STAGES[stage].orders){
       const ingredients=requiredIngredients(order),extra=Object.keys(INGREDIENTS).find(id=>!ingredients.includes(id));
       for(const id of [...ingredients,extra])h.click(`ingredient-${id}`);h.click(`texture-${order.texture}`);h.click('cook');h.tick(2100);h.click('tab-serve');h.click(`package-${order.packaging}`);h.click('serve');assert.equal(h.game.inspect().state.phase,'playing');assert.match(h.game.inspect().state.feedback,/重做/);assertTouchLayout(h,width,height,safeInsets);h.click('clear');
@@ -147,5 +149,53 @@ test('safe narrow screen completes all 19 deliberately incorrect cooked dishes a
     }
     assert.equal(h.game.inspect().screen,'result');assertTouchLayout(h,width,height,safeInsets);h.click('next-stage');if(stage<4){assertTouchLayout(h,width,height,safeInsets);h.click('open-day');}
   }
-  assert.equal(h.game.inspect().screen,'ending');assertTouchLayout(h,width,height,safeInsets);h.game.destroy();
+  assert.equal(h.game.inspect().screen,'day');assertTouchLayout(h,width,height,safeInsets);h.game.destroy();
+});
+
+function savedAt(stage,coins=0,tools={fuel:0,tea:0}){return {...parseProgress(null),unlocked:stage,coins,tools};}
+function canvasPrepare(h,order,index){if(h.game.inspect().state.stage>=5)h.click(`order-${index}`);for(const id of (order.scallion?[...({pancake:['batter','egg','crisp'],cheese:['batter','egg','cheese'],rice:['rice','nori']}[order.recipe]),'scallion']:({pancake:['batter','egg','crisp'],cheese:['batter','egg','cheese'],rice:['rice','nori']}[order.recipe])))h.click('ingredient-'+id);h.click('texture-'+order.texture);h.click('package-'+order.packaging);h.click('cook');h.tick(2100);}
+async function forceQueueFailure(h){const {STAGES}=await import('../game.js');const st=h.game.inspect().state.stage;canvasPrepare(h,STAGES[st].orders[0],0);h.click('hold');canvasPrepare(h,STAGES[st].orders[2],2);h.click('serve');h.click('serve');h.click('order-1');h.click('ingredient-egg');h.click('cook');assert.equal(h.game.inspect().screen,'failure');}
+
+test('all50 shifts complete through actual Canvas controls, queue choice, paired holding and saves',async()=>{
+ const {STAGES}=await import('../game.js');const h=harness({width:320,height:568,safeInsets:{top:92,bottom:34}});open(h);
+ for(let stage=0;stage<50;stage++){
+  for(const i of STAGES[stage].referencePlan){const o=STAGES[stage].orders[i];canvasPrepare(h,o,i);assert.equal(h.game.inspect().state.dish.status,'cooked',`shift${stage+1} order${i}`);if(o.pair!=null&&!h.game.inspect().state.heldDish)h.click('hold');else{h.click('serve');assert.equal(h.game.inspect().state.phase,'served');h.click('serve');}}
+  assert.equal(h.game.inspect().screen,'result');assert.equal(h.game.inspect().progress.stars[stage],3);assertTouchLayout(h,320,568,{top:92,bottom:34});h.click('next-stage');if(stage<49)h.click('open-day');
+ }
+ assert.equal(h.game.inspect().screen,'ending');assert.equal(h.game.inspect().progress.coins,800);assert.equal(h.game.inspect().progress.stars.reduce((a,b)=>a+b,0),150);h.click('replay-all');for(let page=0;page<9;page++){assertTouchLayout(h,320,568,{top:92,bottom:34});if(page<8)h.click('page-next');}h.click('chapter-49');h.click('open-day');assert.equal(h.game.inspect().state.stage,49);h.game.destroy();
+});
+
+test('late shift, tools, failure and explicit mock screens remain 44px-safe on narrow phones',async()=>{
+ for(const [width,height,safeInsets] of [[320,568,{top:92,bottom:34}],[320,568,{top:72,bottom:34,left:12,right:12}],[390,844,{top:80,bottom:34}],[1100,760,{}]]){
+  const rewards=createRewardedService({mode:'mock',timers:{setTimeout:()=>null,clearTimeout(){}}}),h=harness({width,height,safeInsets,saved:savedAt(40,80,{fuel:1,tea:1}),rewards});open(h);
+  for(const station of ['prep','cook','serve']){h.click('tab-'+station);assertTouchLayout(h,width,height,safeInsets);}
+  h.click('tools');assertTouchLayout(h,width,height,safeInsets);h.click('close-tools');h.click('close-menu');await forceQueueFailure(h);assertTouchLayout(h,width,height,safeInsets);h.click('revive-ad');assert.equal(h.game.inspect().screen,'reward');assertTouchLayout(h,width,height,safeInsets);h.click('mock-cancelled');await Promise.resolve();assert.equal(h.game.inspect().screen,'failure');h.game.destroy();rewards.destroy();
+ }
+});
+
+for(const status of ['completed','cancelled','unavailable','error'])test(`Canvas mock ${status}: only completion revives once without coin charge`,async()=>{
+ const rewards=createRewardedService({mode:'mock',timers:{setTimeout:()=>null,clearTimeout(){}}}),h=harness({saved:savedAt(40,40),rewards});open(h);await forceQueueFailure(h);const before=h.game.inspect().state;h.click('revive-ad');assert.equal(h.game.inspect().state.revives,0);h.click('mock-'+status);await Promise.resolve();const after=h.game.inspect();assert.equal(after.state.revives,status==='completed'?1:0);assert.equal(after.screen,status==='completed'?'play':'failure');assert.equal(after.progress.coins,40);if(status==='completed'){assert.equal(after.state.fuel,before.fuel+4);rewards.resolveMock('completed');await Promise.resolve();assert.equal(h.game.inspect().state.fuel,after.state.fuel);}h.game.destroy();rewards.destroy();
+});
+
+test('restarting from mock cancels it; a delayed completed callback cannot revive the new round',async()=>{
+ let resolve;const rewards={getState:()=>({mode:'mock',available:true,busy:false}),request:()=>new Promise(r=>resolve=r),cancel(){},resolveMock(){}};const h=harness({saved:savedAt(40,40),rewards});open(h);await forceQueueFailure(h);const oldRun=h.game.inspect().state.runId;h.click('revive-ad');h.click('reward-retry');const newRun=h.game.inspect().state.runId;assert.ok(newRun>oldRun);resolve({status:'completed',requestId:'late'});await Promise.resolve();assert.equal(h.game.inspect().screen,'day');assert.equal(h.game.inspect().state.revives,0);assert.equal(h.game.inspect().state.runId,newRun);assert.equal(h.game.inspect().progress.coins,40);h.game.destroy();
+});
+
+test('host hide/show during pending simulation does not cancel it or restart the old board',async()=>{
+ const rewards=createRewardedService({mode:'mock',timers:{setTimeout:()=>null,clearTimeout(){}}}),h=harness({saved:savedAt(40),rewards});open(h);await forceQueueFailure(h);h.click('revive-ad');h.callbacks.pause();assert.equal(rewards.getState().busy,true);rewards.resolveMock('completed');await Promise.resolve();assert.equal(h.game.inspect().state.revives,1);assert.equal(h.frames.size,0);h.callbacks.resume();assert.equal(h.frames.size,1);assert.equal(h.game.inspect().screen,'play');h.game.destroy();rewards.destroy();
+});
+
+test('tool purchase and coin revival run through visible controls and persist without double spending',async()=>{
+ const h=harness({saved:savedAt(40,70)});open(h);h.click('tools');h.click('buy-fuel');assert.equal(h.game.inspect().progress.coins,52);h.click('use-fuel');assert.equal(h.game.inspect().state.toolsUsed.fuel,1);assert.equal(h.game.inspect().progress.tools.fuel,0);h.click('close-menu');await forceQueueFailure(h);h.click('revive-coins');assert.equal(h.game.inspect().state.revives,1);assert.equal(h.game.inspect().progress.coins,22);assert.equal(JSON.parse([...h.store.values()][0]).coins,22);h.game.destroy();
+});
+
+test('used tool reload restores the inventory once, and an explicit free restart follows the same rule',()=>{
+ const h=harness({saved:savedAt(10,60)});open(h);h.click('tools');h.click('buy-fuel');h.click('use-fuel');assert.equal(h.game.inspect().state.fuel,15);assert.equal(h.game.inspect().progress.coins,42);const saved=JSON.parse([...h.store.values()][0]);assert.equal(saved.pendingSpend.tools.fuel,1);h.game.destroy();
+ const reload=harness({saved});assert.equal(reload.game.inspect().progress.tools.fuel,1);assert.equal(reload.game.inspect().progress.coins,42);assert.equal(reload.game.inspect().progress.pendingSpend,null);open(reload);reload.click('tools');reload.click('use-fuel');reload.click('close-menu');reload.click('restart');reload.click('confirm-restart');assert.equal(reload.game.inspect().progress.tools.fuel,1);assert.equal(reload.game.inspect().progress.coins,42);const savedAgain=JSON.parse([...reload.store.values()][0]);reload.game.destroy();const twice=harness({saved:savedAgain});assert.equal(twice.game.inspect().progress.tools.fuel,1);twice.game.destroy();
+});
+test('coin revival followed by reload returns the spent30 coins once, without granting a free active revival',async()=>{
+ const h=harness({saved:savedAt(40,60)});open(h);await forceQueueFailure(h);h.click('revive-coins');assert.equal(h.game.inspect().progress.coins,30);assert.equal(h.game.inspect().state.revives,1);const saved=JSON.parse([...h.store.values()][0]);h.game.destroy();const reload=harness({saved});assert.equal(reload.game.inspect().progress.coins,60);assert.equal(reload.game.inspect().state.revives,0);const again=JSON.parse([...reload.store.values()][0]);reload.game.destroy();const twice=harness({saved:again});assert.equal(twice.game.inspect().progress.coins,60);twice.game.destroy();
+});
+test('failed persistence cannot debit coins, consume stock, or grant a paid gameplay effect',async()=>{
+ const h=harness({saved:savedAt(40,60,{fuel:1,tea:0})});open(h);h.platform.storage.setItem=()=>{throw Error('full');};h.click('tools');h.click('buy-tea');assert.equal(h.game.inspect().progress.coins,60);assert.equal(h.game.inspect().progress.tools.tea,0);const fuel=h.game.inspect().state.fuel;h.click('use-fuel');assert.equal(h.game.inspect().state.fuel,fuel);assert.equal(h.game.inspect().progress.tools.fuel,1);assert.equal(h.game.inspect().storageWarning,true);h.click('close-tools');h.click('close-menu');await forceQueueFailure(h);h.click('revive-coins');assert.equal(h.game.inspect().state.phase,'failed');assert.equal(h.game.inspect().state.revives,0);assert.equal(h.game.inspect().progress.coins,60);h.game.destroy();
 });

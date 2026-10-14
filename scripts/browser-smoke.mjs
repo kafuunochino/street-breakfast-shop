@@ -10,7 +10,7 @@ async function command(method,params={}){return new Promise((resolve,reject)=>{c
 async function value(expression){const res=await command('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(res.exceptionDetails)throw Error(JSON.stringify(res.exceptionDetails));return res.result.value;}
 async function waitFor(expr,ms=5000){const start=Date.now();while(Date.now()-start<ms){if(await value(expr))return;await sleep(40);}throw Error('Timed out: '+expr);}
 async function inspect(){return value('window.breakfastGame.inspect()');}
-async function click(buttonId){let snap=await inspect();if(!snap.buttons.some(x=>x.id===buttonId)){const tab=buttonId.startsWith('ingredient-')||buttonId==='recipes'?'tab-prep':buttonId.startsWith('texture-')||buttonId==='cook'?'tab-cook':buttonId.startsWith('package-')||buttonId==='serve'?'tab-serve':null;if(tab&&snap.screen==='play')await click(tab);else if(['chapters','restart','sidebar-open'].includes(buttonId)&&snap.screen==='play')await click('menu');snap=await inspect();}const b=snap.buttons.find(x=>x.id===buttonId);assert.ok(b&&!b.disabled,`button active: ${buttonId}`);const {zoom,ox,oy}=snap.viewport;const x=ox+(Number(b.x)+b.w/2)*zoom,y=oy+(b.y+b.h/2)*zoom;await command('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button:'left',clickCount:1});await command('Input.dispatchMouseEvent',{type:'mouseReleased',x,y,button:'left',clickCount:1});}
+async function click(buttonId){let snap=await inspect();if(!snap.buttons.some(x=>x.id===buttonId)){const tab=buttonId.startsWith('ingredient-')||buttonId==='recipes'?'tab-prep':buttonId.startsWith('texture-')||buttonId==='cook'?'tab-cook':buttonId.startsWith('package-')||buttonId==='serve'||buttonId==='hold'||buttonId==='take-held'?'tab-serve':null;if(tab&&snap.screen==='play')await click(tab);else if(['chapters','restart','sidebar-open'].includes(buttonId)&&snap.screen==='play')await click('menu');snap=await inspect();}const b=snap.buttons.find(x=>x.id===buttonId);assert.ok(b&&!b.disabled,`button active: ${buttonId}`);const {zoom,ox,oy}=snap.viewport;const x=ox+(Number(b.x)+b.w/2)*zoom,y=oy+(b.y+b.h/2)*zoom;await command('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button:'left',clickCount:1});await command('Input.dispatchMouseEvent',{type:'mouseReleased',x,y,button:'left',clickCount:1});}
 async function screenshot(name){const shot=await command('Page.captureScreenshot',{format:'png'});await writeFile(new URL(`../artifacts/${name}.png`,import.meta.url),Buffer.from(shot.data,'base64'));}
 try{
  let pages;for(let i=0;i<100;i++){try{pages=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();if(pages.some(p=>p.type==='page'))break;}catch{}await sleep(100);}
@@ -27,24 +27,21 @@ try{
  await click('ingredient-egg');await click('cook');await click('clear');await sleep(2100);assert.equal((await inspect()).state.dish.status,'raw');
  await screenshot('canvas-play-mobile');
  for(let s=0;s<STAGES.length;s++){
-  for(let o=0;o<STAGES[s].orders.length;o++){
-   const order=STAGES[s].orders[o];
+  for(const o of STAGES[s].referencePlan){const order=STAGES[s].orders[o];if(s>=5)await click(`order-${o}`);
    for(const ingredient of requiredIngredients(order))await click(`ingredient-${ingredient}`);
-   await click(`texture-${order.texture}`);await click(`package-${order.packaging}`);await click('cook');
-   await waitFor('window.breakfastGame.inspect().state.dish.status === "cooked"',5000);
-   await click('serve');snap=await inspect();assert.equal(snap.state.phase,'served');assert.equal(snap.state.servedIds.length,o+1);
-   await click('serve');
+   await click(`texture-${order.texture}`);await click(`package-${order.packaging}`);await click('cook');await waitFor('window.breakfastGame.inspect().state.dish.status === "cooked"',5000);
+   snap=await inspect();if(order.pair!=null&&!snap.state.heldDish)await click('hold');else{await click('serve');snap=await inspect();assert.equal(snap.state.phase,'served');await click('serve');}
   }
-  snap=await inspect();assert.equal(snap.screen,'result');assert.equal(snap.state.phase,'stageComplete');assert.equal(snap.progress.unlocked,Math.min(4,s+1));
-  if(s<4){await click('next-stage');await click('open-day');}else{await screenshot('canvas-final-result');await click('next-stage');}
+  snap=await inspect();assert.equal(snap.screen,'result');assert.equal(snap.state.phase,'stageComplete');assert.equal(snap.progress.unlocked,Math.min(49,s+1));
+  if(s<49){await click('next-stage');await click('open-day');}else{await screenshot('canvas-final-result');await click('next-stage');}
  }
- snap=await inspect();assert.equal(snap.screen,'ending');assert.equal(snap.progress.stars.reduce((a,b)=>a+b,0),14);await screenshot('canvas-ending-mobile');
+ snap=await inspect();assert.equal(snap.screen,'ending');assert.equal(snap.progress.stars.reduce((a,b)=>a+b,0),149);await screenshot('canvas-ending-mobile');
  await click('replay-all');await click('chapter-0');await click('open-day');
  await command('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});await sleep(100);await screenshot('canvas-desktop');
  await command('Emulation.setDeviceMetricsOverride',{width:320,height:568,deviceScaleFactor:1,mobile:true});await sleep(100);await screenshot('canvas-small-mobile');
  snap=await inspect();assert.ok(snap.viewport.ox>=0&&snap.viewport.oy>=0,'layout fits narrow viewport');
- await command('Page.reload');await waitFor('!!window.breakfastGame');snap=await inspect();assert.equal(snap.progress.unlocked,4);assert.equal(snap.progress.sound,false);assert.equal(snap.progress.stars.reduce((a,b)=>a+b,0),14);
+ await command('Page.reload');await waitFor('!!window.breakfastGame');snap=await inspect();assert.equal(snap.progress.unlocked,49);assert.equal(snap.progress.sound,false);assert.equal(snap.progress.stars.reduce((a,b)=>a+b,0),149);
  assert.equal(errors.length,0,JSON.stringify(errors));
- const result={passed:true,engine:'Chromium headless',viewports:['390x844','1440x900','320x568'],ordersServed:19,stagesCompleted:5,flows:['welcome','instructions','recipe panel','stage selection/cancel','sound preference','wrong serving recovery','clear during cook','all recipes and variants','stage progression','ending','stage replay','responsive resize','saved progress after reload'],consoleErrors:errors.length,scope:'Browser demo only, no official Douyin developer-tool or real-device validation'};
+ const result={passed:true,engine:'Chromium headless',viewports:['390x844','1440x900','320x568'],ordersServed:286,stagesCompleted:50,flows:['welcome','instructions','recipe panel','stage selection/cancel','sound preference','wrong serving recovery','clear during cook','all recipes and variants','50-shift queue / fuel / paired holding progression','ending','stage replay','responsive resize','saved progress after reload'],consoleErrors:errors.length,scope:'Browser demo only, no official Douyin developer-tool or real-device validation'};
  await writeFile(new URL('../artifacts/browser-smoke.json',import.meta.url),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));
 }catch(e){console.error(e);process.exitCode=1;}finally{ws?.close();chrome.kill('SIGTERM');await sleep(200);await rm(temp,{recursive:true,force:true}).catch(()=>{});}

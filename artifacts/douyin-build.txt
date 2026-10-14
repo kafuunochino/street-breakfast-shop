@@ -1,5 +1,5 @@
 
-> street-breakfast-shop@0.2.0 build:tt
+> street-breakfast-shop@0.3.0 build:tt
 > node scripts/build-tt.mjs
 
 {
@@ -7,22 +7,24 @@
   "info": {
     "appid": "ttebf69d4b758f209102",
     "projectname": "街角早餐铺",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "inputs": [
       "game.js",
       "src/canvas-art.js",
       "src/main.js",
       "adapters/tt.js",
-      "adapters/douyin-sidebar.js"
+      "adapters/douyin-sidebar.js",
+      "adapters/rewarded.js"
     ],
     "sourceFiles": {
-      "game.js": "928386acae25685fb24ae67400ab48d0a5e449d7da4c15859fcb8c02f718c937",
-      "src/canvas-art.js": "6539c38ff4049cd59e6db2b3fd09895bc17ddaeb2879653f25b9ae92cd454778",
-      "src/main.js": "a809d6879fecafe3e70776aa3e03355eb093086fd439586cfc5705c32a72a7a0",
+      "game.js": "327eb3199565f95c267eb9963fff9547fa0de12c5a988097b5b64cac75bf6675",
+      "src/canvas-art.js": "e497a62f2f48b774f8ff3c2ed685a18aab9a28c4e7424efc2b8fc6292dc66f7e",
+      "src/main.js": "04f695edf1808580e0a8ec4f60187636cc4142fd5a3f1ebe9d1dc290df6e7e33",
       "adapters/tt.js": "2bd63d3b43979beec2065414f03879573badf5101b15c3c2bc4fa03aff130b1a",
       "adapters/douyin-sidebar.js": "09812d4f85060387616f1b135c7311a09a38f27b34b4376a4dd05c16c504b598",
-      "config/douyin.json": "55aa2eb95e1ec12953d14ce4467c2dbf433275d4dd59ae73c2155473b0ab8d7d",
-      "scripts/build-tt.mjs": "d11822e710204bfd6469413faf1fecbb937647e812f5bf1b0a488dff1e53e49c"
+      "adapters/rewarded.js": "e83bf601d941b7603b5bccbe29354e7a1c894105f1ec3794995d6da372d9acc7",
+      "config/douyin.json": "246c700f3b987f052c691514d70c2c832ce6450d86c6ff38a2a6bd659b2e17fc",
+      "scripts/build-tt.mjs": "d16441bd0f5ec96b5628797c17ea52e50f8656757cb37b42aaa0befa2f630f64"
     },
     "entry": "game.js",
     "browserAssetsIncluded": false,
@@ -30,7 +32,7 @@
     "realPhoneValidated": false,
     "uploaded": false,
     "files": {
-      "game.js": "a0261c6344eaecb15a6c8586cc20e933d956e22a091bc4277a876cd4679a7940",
+      "game.js": "1499c705e224576ff80c2431f9c1969ad5b7804c41e03eb454970373225e90e8",
       "game.json": "adfce90c444cdbf96dc51598471759bca31feb5e936833b36847f3570fd4bca0",
       "project.config.json": "0444f0cad07e96fbefbd9ff02278b1163b61ab2900c3a042cad5dc3f14d8fa06",
       "assets/tap.wav": "5d91b8d5d7e016ed4c42054e607ec700b6e6ef16721b6adc03c14368bc68ce93",

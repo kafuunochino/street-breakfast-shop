@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import vm from 'node:vm';
 const root=new URL('../',import.meta.url);
 export async function buildOffline(){
-  const inputs=['game.js','src/canvas-art.js','src/main.js','adapters/browser.js'],chunks=[],sources={};
+  const inputs=['game.js','src/canvas-art.js','src/main.js','adapters/browser.js','adapters/rewarded.js'],chunks=[],sources={};
   for(const path of inputs){
     const source=await readFile(new URL(path,root),'utf8');sources[path]=createHash('sha256').update(source).digest('hex');
     const code=source.replace(/^import [^\n]*;\r?\n/gm,'').replace(/^export /gm,'');
@@ -14,7 +14,7 @@ export async function buildOffline(){
   }
   const embedded={};
   for(const name of ['tap','cook','success','error','complete']){const bytes=await readFile(new URL(`assets/${name}.wav`,root));embedded[name]='data:audio/wav;base64,'+bytes.toString('base64');}
-  const entry=`const platform=createBrowserPlatform(document.querySelector('canvas'),window,${JSON.stringify(embedded)});\nconst game=startGame(platform);\nwindow.breakfastGame={inspect:()=>game.inspect()};\nwindow.addEventListener('pagehide',event=>{if(!event.persisted){game.destroy();platform.destroy();}});`;
+  const entry=`const platform=createBrowserPlatform(document.querySelector('canvas'),window,${JSON.stringify(embedded)});\nplatform.rewards=createRewardedService({mode:'mock',timers:{setTimeout:window.setTimeout,clearTimeout:window.clearTimeout}});\nconst game=startGame(platform);\nwindow.breakfastGame={inspect:()=>game.inspect()};\nwindow.addEventListener('pagehide',event=>{if(!event.persisted){game.destroy();platform.destroy();}});`;
   const code=`(function(){\n'use strict';\n${chunks.join('\n')}\n${entry}\n})();\n`;
   new vm.Script(code,{filename:'breakfast-demo.html'});
   if(/<\/script/i.test(code))throw Error('Unexpected script closing sequence');

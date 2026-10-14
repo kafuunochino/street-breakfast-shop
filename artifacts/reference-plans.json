@@ -1,0 +1,3069 @@
+{
+  "version": "0.3.0",
+  "validation": "Pure deterministic reference plan replay. Separate tests also replay all50 via Canvas and exact offline HTML pointer handlers.",
+  "count": 50,
+  "allInitiallySolvable": true,
+  "realBrowserVerified": false,
+  "realDeviceVerified": false,
+  "shifts": [
+    {
+      "shift": 1,
+      "title": "第一缕香气",
+      "orders": 3,
+      "queueSize": 1,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2
+      ],
+      "passed": true,
+      "finalScore": 330,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        }
+      ]
+    },
+    {
+      "shift": 2,
+      "title": "街坊的口味",
+      "orders": 3,
+      "queueSize": 1,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2
+      ],
+      "passed": true,
+      "finalScore": 330,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        }
+      ]
+    },
+    {
+      "shift": 3,
+      "title": "早高峰不慌",
+      "orders": 4,
+      "queueSize": 1,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 4,
+      "title": "雨天也温暖",
+      "orders": 4,
+      "queueSize": 1,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 5,
+      "title": "这条街的早安",
+      "orders": 5,
+      "queueSize": 1,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 6,
+      "title": "第一缕香气 · 6",
+      "orders": 5,
+      "queueSize": 2,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 7,
+      "title": "第一缕香气 · 7",
+      "orders": 4,
+      "queueSize": 2,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 8,
+      "title": "第一缕香气 · 8",
+      "orders": 5,
+      "queueSize": 2,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 9,
+      "title": "第一缕香气 · 9",
+      "orders": 4,
+      "queueSize": 2,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 10,
+      "title": "第一缕香气 · 10",
+      "orders": 5,
+      "queueSize": 2,
+      "fuel": null,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": null,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": null,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 11,
+      "title": "街坊早市 · 1",
+      "orders": 4,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 12,
+      "title": "街坊早市 · 2",
+      "orders": 5,
+      "queueSize": 3,
+      "fuel": 14,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 12,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 13,
+      "title": "街坊早市 · 3",
+      "orders": 4,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 14,
+      "title": "街坊早市 · 4",
+      "orders": 5,
+      "queueSize": 3,
+      "fuel": 14,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 12,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 15,
+      "title": "街坊早市 · 5",
+      "orders": 4,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 16,
+      "title": "街坊早市 · 6",
+      "orders": 5,
+      "queueSize": 3,
+      "fuel": 14,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 12,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 17,
+      "title": "街坊早市 · 7",
+      "orders": 4,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 18,
+      "title": "街坊早市 · 8",
+      "orders": 5,
+      "queueSize": 3,
+      "fuel": 14,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 12,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 19,
+      "title": "街坊早市 · 9",
+      "orders": 4,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "passed": true,
+      "finalScore": 460,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        }
+      ]
+    },
+    {
+      "shift": 20,
+      "title": "街坊早市 · 10",
+      "orders": 5,
+      "queueSize": 3,
+      "fuel": 14,
+      "heatReuse": false,
+      "holding": false,
+      "referencePlan": [
+        1,
+        0,
+        3,
+        2,
+        4
+      ],
+      "passed": true,
+      "finalScore": 600,
+      "fuelRemaining": 4,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 12,
+          "turn": 1
+        },
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        }
+      ]
+    },
+    {
+      "shift": 21,
+      "title": "炉火余温 · 1",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 11,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 2,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 22,
+      "title": "炉火余温 · 2",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 11,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 2,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 23,
+      "title": "炉火余温 · 3",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 11,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 2,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 24,
+      "title": "炉火余温 · 4",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 11,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 2,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 25,
+      "title": "炉火余温 · 5",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 11,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 2,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 26,
+      "title": "炉火余温 · 6",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 27,
+      "title": "炉火余温 · 7",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 28,
+      "title": "炉火余温 · 8",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 29,
+      "title": "炉火余温 · 9",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 30,
+      "title": "炉火余温 · 10",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": false,
+      "referencePlan": [
+        0,
+        2,
+        1,
+        3,
+        5,
+        4
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 31,
+      "title": "同桌早餐 · 1",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 32,
+      "title": "同桌早餐 · 2",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 33,
+      "title": "同桌早餐 · 3",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 34,
+      "title": "同桌早餐 · 4",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 35,
+      "title": "同桌早餐 · 5",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 36,
+      "title": "同桌早餐 · 6",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 37,
+      "title": "同桌早餐 · 7",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 38,
+      "title": "同桌早餐 · 8",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 39,
+      "title": "同桌早餐 · 9",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 40,
+      "title": "同桌早餐 · 10",
+      "orders": 6,
+      "queueSize": 3,
+      "fuel": 10,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        2,
+        4,
+        3,
+        5
+      ],
+      "passed": true,
+      "finalScore": 740,
+      "fuelRemaining": 1,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 8,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 2
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 5,
+          "turn": 3
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 4
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 2,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 6
+        }
+      ]
+    },
+    {
+      "shift": 41,
+      "title": "整条街的早高峰 · 1",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 42,
+      "title": "整条街的早高峰 · 2",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 43,
+      "title": "整条街的早高峰 · 3",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 44,
+      "title": "整条街的早高峰 · 4",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 45,
+      "title": "整条街的早高峰 · 5",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 46,
+      "title": "整条街的早高峰 · 6",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 47,
+      "title": "整条街的早高峰 · 7",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 48,
+      "title": "整条街的早高峰 · 8",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 49,
+      "title": "整条街的早高峰 · 9",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    },
+    {
+      "shift": 50,
+      "title": "整条街的早高峰 · 10",
+      "orders": 8,
+      "queueSize": 3,
+      "fuel": 12,
+      "heatReuse": true,
+      "holding": true,
+      "referencePlan": [
+        0,
+        1,
+        3,
+        2,
+        4,
+        5,
+        7,
+        6
+      ],
+      "passed": true,
+      "finalScore": 1020,
+      "fuelRemaining": 0,
+      "adRevives": 0,
+      "toolsUsed": {
+        "fuel": 0,
+        "tea": 0
+      },
+      "events": [
+        {
+          "order": 0,
+          "phase": "playing",
+          "fuel": 10,
+          "turn": 1
+        },
+        {
+          "order": 1,
+          "phase": "playing",
+          "fuel": 9,
+          "turn": 2
+        },
+        {
+          "order": 3,
+          "phase": "playing",
+          "fuel": 7,
+          "turn": 3
+        },
+        {
+          "order": 2,
+          "phase": "playing",
+          "fuel": 6,
+          "turn": 4
+        },
+        {
+          "order": 4,
+          "phase": "playing",
+          "fuel": 4,
+          "turn": 5
+        },
+        {
+          "order": 5,
+          "phase": "playing",
+          "fuel": 3,
+          "turn": 6
+        },
+        {
+          "order": 7,
+          "phase": "playing",
+          "fuel": 1,
+          "turn": 7
+        },
+        {
+          "order": 6,
+          "phase": "playing",
+          "fuel": 0,
+          "turn": 8
+        }
+      ]
+    }
+  ]
+}

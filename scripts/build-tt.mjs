@@ -10,12 +10,12 @@ export async function buildDouyin(options = {}) {
   if (typeof appid !== 'string' || (appid !== '' && !/^tt[a-zA-Z0-9]{8,64}$/.test(appid))) throw new Error('Invalid DOUYIN_APP_ID override');
   const output = new URL('dist/douyin/', root);
   await mkdir(new URL('assets/', output), { recursive: true });
-  const inputs = ['game.js', 'src/canvas-art.js', 'src/main.js', 'adapters/tt.js', 'adapters/douyin-sidebar.js'];
+  const inputs = ['game.js', 'src/canvas-art.js', 'src/main.js', 'adapters/tt.js', 'adapters/douyin-sidebar.js', 'adapters/rewarded.js'];
   const chunks = [], declared = new Set();
   for (const path of inputs) {
     let source = await readFile(new URL(path, root), 'utf8');
     const expectedImports = path === 'src/main.js' ? [
-      "import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars } from '../game.js';",
+      "import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars, visibleOrders, patienceLeft, fireCost, freshLeft, allocateRun, buyTool, spendTool, coinRevive, TOOL_COSTS, recoverAbandonedRun } from '../game.js';",
       "import { C, roundRect, circle, ellipse, line, poly, label, wrapped, ingredientArt, foodArt, avatar, streetArt } from './canvas-art.js';"
     ] : [];
     const imports = source.match(/^import[^\n]*$/gm) || [];
@@ -30,7 +30,7 @@ export async function buildDouyin(options = {}) {
   }
   const audio = Object.fromEntries(['tap', 'cook', 'success', 'error', 'complete'].map(name => [name, `assets/${name}.wav`]));
   // Sidebar listener is installed synchronously, before Canvas creation or the game loop.
-  const entry = `\nconst sidebar = createDouyinSidebar(tt);\nconst platform = createTTPlatform(tt, { requestAnimationFrame, cancelAnimationFrame }, ${JSON.stringify(audio)});\nplatform.sidebar = sidebar;\nstartGame(platform);\n`;
+  const entry = `\nconst sidebar = createDouyinSidebar(tt);\nconst platform = createTTPlatform(tt, { requestAnimationFrame, cancelAnimationFrame }, ${JSON.stringify(audio)});\nplatform.sidebar = sidebar;\nplatform.rewards = createRewardedService();\nstartGame(platform);\n`;
   const bundle = `(function(){\n'use strict';\n${chunks.join('\n')}${entry}})();\n`;
   new Script(bundle, { filename: 'game.js' });
   await writeFile(new URL('game.js', output), bundle);
