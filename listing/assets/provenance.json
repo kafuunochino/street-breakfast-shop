@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "asset": "icon-source-v1.png",
+  "createdAt": "2026-10-14",
+  "generator": "OpenAI built-in image_gen tool",
+  "mode": "built_in_generation",
+  "prompt": "Use case: stylized-concept. Asset type: original square mobile cooking game listing icon for 街角早餐铺. Please deliver an actual PNG exactly 600 pixels wide and 600 pixels high, not a larger square. Scene/backdrop: a cozy tiny Chinese neighborhood breakfast shop, front counter and simple coral-and-cream striped awning, close framing rather than a busy streetscape. Main subject: a delicious large folded golden Chinese jianbing crepe with egg and a few green scallions in a plain kraft paper sleeve on the counter, a very small triangular grilled rice ball beside it. Inviting morning steam with a few simple wisps. Style/medium: tactile cut-paper and soft matte toy-like editorial illustration with crisp layered edges and gentle shadows; entirely original. Match existing game palette warm cream #fffcf0, sage #70866a, coral #bc674e, golden food #d7ac65, deep olive #434a3a. The food is the large clear focal point with the shop as a simplified framing cue, readable at app-icon thumbnail size. Constraints: actual 600 x 600 square PNG under 6MB; opaque full-bleed cream background extends to all four square corners, NO rounded outer corners, no enclosing border. No people, no lettering or signage, no text, no logo, no watermark, no QR codes, no trademarked characters, no branding, no interface overlays. Do not include foods unrelated to the described Chinese breakfast game.",
+  "sourceArtwork": "条纹遮棚下的街角早餐窗口，金黄煎饼与香煎饭团，暖米色、珊瑚色和鼠尾草绿。",
+  "sourceAssets": "未输入第三方参考图片；未下载或购买素材。按本项目描述原创生成。",
+  "targetUse": "游戏展示图标草案，不是实机截图。",
+  "humanInspection": {
+    "performed": true,
+    "visualOnly": true,
+    "notes": "画面与核心玩法主题一致；未观察到文字、水印、二维码、品牌标识或外框圆角。未进行商标相似性检索。"
+  },
+  "exact600Export": {
+    "requested": true,
+    "met": false,
+    "actualWidth": 1254,
+    "actualHeight": 1254,
+    "reason": "内置生成工具输出1254×1254，未按提示输出600×600。保留原画，不把源图标为可上传版本。",
+    "nextStep": "在实际资料提交前完成获准的精确尺寸导出并重新检查。"
+  },
+  "modifications": "仅复制原始生成PNG到项目listing目录，未缩放、裁切、重绘或改动运行时与冻结候选。"
+}

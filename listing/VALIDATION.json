@@ -1,0 +1,34 @@
+{
+  "validatedAtUTC": "2026-10-14T11:13:06.766317+00:00",
+  "status": "draft_ready_icon_exact_dimensions_pending",
+  "name": "街角早餐铺",
+  "text": {
+    "introductionCharacters": 26,
+    "introductionHanCharacters": 22,
+    "introductionMaximum": 60,
+    "introductionPass": true,
+    "detailedDescriptionCharacters": 210,
+    "detailedDescriptionHanCharacters": 189,
+    "detailedDescriptionMinimum": 120,
+    "detailedDescriptionMaximum": 300,
+    "detailedDescriptionPass": true,
+    "detailedDescriptionHanCountAlsoPass": true
+  },
+  "icon": {
+    "file": "assets/icon-source-v1.png",
+    "format": "PNG",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2507861,
+    "sha256": "bf4170f7f89c750757b5cec4bef20369509e3b8ad7fac5018c2cbde315abf396",
+    "square": true,
+    "under6MB": true,
+    "exact600By600": false,
+    "visuallyInspected": true,
+    "visuallyObservedNoOuterRoundedCorners": true,
+    "visuallyObservedNoWatermarkTextOrQRCode": true,
+    "submissionReady": false
+  },
+  "platformSubmitted": false,
+  "runtimeOrFrozenCandidateModifiedByThisTask": false
+}
