@@ -76,7 +76,12 @@ export function evaluateDish(order, dish) {
 export function reduce(state, action) {
   if (!state || !action || typeof action.type !== 'string') return state;
   const dish = state.dish;
-  if (action.type === 'RESTART_STAGE') return initialState(state.stage);
+  if (action.type === 'RESTART_STAGE') {
+    const restarted = initialState(state.stage);
+    // Never reuse a token: a timer from before restart must remain stale.
+    restarted.dish.token = dish.token + 1;
+    return restarted;
+  }
   if (action.type === 'NEXT_STAGE') {
     if (state.phase !== 'stageComplete' || state.stage >= STAGES.length - 1) return state;
     return initialState(state.stage + 1);
