@@ -1,0 +1,30 @@
+/** Original procedural Canvas2D artwork. No downloaded assets or DOM. */
+export const C = { bg: '#eee8d9', paper: '#fffcf0', ink: '#434a3a', muted: '#8e927b', green: '#70866a', pale: '#e5ebd8', coral: '#bc674e', gold: '#d7ac65', line: '#dedac6' };
+export function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+  r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill){ctx.fillStyle=fill;ctx.fill();} if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}
+}
+export function circle(ctx, x, y, radius, color) { ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill(); }
+export function ellipse(ctx, x, y, rx, ry, color) { ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);circle(ctx,0,0,1,color);ctx.restore(); }
+export function line(ctx, x, y, ex, ey, color, width=1) {ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex,ey);ctx.stroke();}
+export function poly(ctx, points, color) { ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=color;ctx.fill(); }
+export function label(ctx, str, x, y, size=12, color=C.ink, weight='normal', align='left') { ctx.fillStyle=color;ctx.font=`${weight} ${size}px sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(str,x,y); }
+export function wrapped(ctx, str, x, y, maxWidth, size=12, color=C.ink, height=20, maxLines=4) {ctx.font=`${size}px sans-serif`; const lines=[];let row='';for(const char of str){if(char==='\n'){lines.push(row);row='';continue;}if(ctx.measureText(row+char).width>maxWidth&&row){lines.push(row);row=char;}else row+=char;}if(row)lines.push(row);lines.slice(0,maxLines).forEach((s,i)=>label(ctx,s,x,y+i*height,size,color));return Math.min(lines.length,maxLines)*height;}
+export function ingredientArt(ctx, id, x, y, s=1) {ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ if(id==='batter'){ellipse(ctx,0,12,22,7,'#dbc99f');poly(ctx,[[-22,-3],[22,-3],[16,17],[-16,17]],'#8ba38c');ellipse(ctx,0,-3,22,8,'#f0d799');line(ctx,10,-5,24,-23,'#987652',4);}
+ if(id==='egg'){ellipse(ctx,0,4,23,16,'#fdf4d8');circle(ctx,1,3,11,'#e8ac49');circle(ctx,-2,0,3,'#f4ca71');}
+ if(id==='crisp'){poly(ctx,[[-21,-10],[10,-20],[23,12],[-10,21]],'#dca947');for(let i=0;i<3;i++)line(ctx,-12,-6+i*8,9,-12+i*8,'#f2d487',2);}
+ if(id==='cheese'){poly(ctx,[[-21,-2],[6,-19],[23,-1],[23,18],[-21,18]],'#e4af48');poly(ctx,[[-21,-2],[6,-19],[23,-1],[-21,6]],'#f3ce78');circle(ctx,-7,10,4,'#cb9534');circle(ctx,13,6,3,'#cb9534');}
+ if(id==='rice'){ellipse(ctx,0,12,24,8,'#d9c69e');poly(ctx,[[-22,-1],[22,-1],[16,17],[-16,17]],'#c58060');ellipse(ctx,0,-2,22,13,'#faf1d6');for(let i=0;i<5;i++)line(ctx,-12+i*6,-3+(i%2)*4,-9+i*6,-5+(i%2)*4,'#e0d6b7',2);}
+ if(id==='nori'){poly(ctx,[[-21,-12],[16,-21],[23,16],[-16,22]],'#587a5e');for(let i=0;i<4;i++)line(ctx,-13,-8+i*8,13,-13+i*8,'#77916c',2);}
+ if(id==='scallion'){for(let i=0;i<3;i++){line(ctx,-10+i*10,17,-4+i*13,-18-i*3,'#799b5a',6);line(ctx,-10+i*10,17,-8+i*11,8,'#e3dfaa',6);}circle(ctx,-18,-2,5,'#8aa664');circle(ctx,-18,-2,2,'#e3dfaa');}
+ ctx.restore(); }
+export function foodArt(ctx, dish, x, y, scale=1) {ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);const ids=dish.ingredients;if(!ids.length){label(ctx,'点选食材，开始新的一份',0,5,10,'#bdc2a5','normal','center');ctx.restore();return;}
+ const cooked=dish.status==='cooked'; if(ids.includes('rice'))poly(ctx,[[-40,26],[-17,-29],[0,-40],[17,-29],[40,26]],cooked?'#d6ac66':'#efe1b9');else ellipse(ctx,0,0,64,34,cooked?(dish.texture==='crisp'?'#d6a04e':'#e1b966'):'#ecdaa6');
+ if(ids.includes('egg')){ellipse(ctx,-9,-2,30,18,'#faf0c6');ellipse(ctx,-9,-3,13,10,'#e3a63a');}
+ if(ids.includes('cheese'))poly(ctx,[[-28,-17],[16,-25],[31,10],[-12,24]],'#edc156');
+ if(ids.includes('crisp'))poly(ctx,[[14,-24],[40,-12],[25,18],[-1,7]],'#cd933f');
+ if(ids.includes('nori'))roundRect(ctx,-15,-1,30,30,1,'#587353');
+ if(ids.includes('scallion'))for(const [a,b] of [[-30,-3],[6,-18],[31,6],[-4,21]])line(ctx,a,b,a+6,b+3,'#6c914b',4);
+ ctx.restore(); }
+export function avatar(ctx, id, x, y, color, size=40) {ctx.save();ctx.translate(x,y);ctx.scale(size/80,size/80);circle(ctx,0,0,39,color);ellipse(ctx,0,32,29,20,'#f2d89f');ellipse(ctx,0,-7,26,29,id==='zhou'?'#96988b':'#57584b');ellipse(ctx,0,1,22,27,'#eec3a1');poly(ctx,[[-23,-9],[-19,-24],[-4,-29],[0,-18],[20,-9]],id==='zhou'?'#96988b':'#57584b');circle(ctx,-8,0,2,'#61584a');circle(ctx,9,0,2,'#61584a');line(ctx,-4,12,4,12,'#b87d64',2);if(id==='zao'){ellipse(ctx,0,-22,27,12,'#e1b74b');line(ctx,-27,-18,27,-18,'#bc9237',3);}if(id==='zhou'){roundRect(ctx,-18,-5,14,10,2,null,'#676352');roundRect(ctx,4,-5,14,10,2,null,'#676352');line(ctx,-4,-1,4,-1,'#676352');}if(id==='qiao'){poly(ctx,[[-25,-23],[-18,-35],[18,-35],[25,-23]],'#f6f2dc');}ctx.restore(); }
+export function streetArt(ctx, x, y, w, h, day=0) {ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.translate(x,y);ctx.scale(w/390,h/110);ctx.fillStyle=day===3?'#d9e1d6':'#e2e9d6';ctx.fillRect(0,0,390,110);circle(ctx,335,22,22,'#faebba');poly(ctx,[[0,60],[0,37],[62,37],[62,15],[98,15],[98,110],[0,110]],'#c7d3bd');poly(ctx,[[292,110],[292,35],[350,35],[350,56],[390,56],[390,110]],'#c2cdb9');roundRect(ctx,110,24,174,86,0,'#dfc7a1');roundRect(ctx,130,31,132,26,3,'#8c6f50');label(ctx,'街 角 早 餐 铺',196,44,13,'#f9e7bd','bold','center');poly(ctx,[[102,60],[292,60],[303,82],[91,82]],'#efd7a7');for(let i=0;i<7;i++)poly(ctx,[[103+i*27,60],[116+i*27,60],[112+i*30,82],[96+i*30,82]],'#cb7054');roundRect(ctx,128,85,78,25,0,'#63806a');roundRect(ctx,225,85,39,25,0,'#a28d65');line(ctx,168,86,168,110,'#c9ba87',2);line(ctx,0,108,390,108,'#b6b99b',2);poly(ctx,[[69,110],[92,110],[96,90],[65,90]],'#ae7754');circle(ctx,79,83,17,'#7b9867');circle(ctx,69,77,13,'#8eaa76');roundRect(ctx,316,91,21,19,2,'#b18a61');line(ctx,326,91,328,67,'#7f965f',3);circle(ctx,328,66,8,day>0?'#c4989a':'#90a572');if(day===3)for(let i=0;i<18;i++)line(ctx,i*24,5+(i%3)*17,i*24-8,30+(i%3)*17,'#b7c9b8',1);ctx.restore(); }

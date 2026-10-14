@@ -1,0 +1,52 @@
+{
+  "candidateOnly": true,
+  "officialToolValidated": false,
+  "uploaded": false,
+  "files": [
+    {
+      "path": "dist/douyin/BUILD_INFO.json",
+      "bytes": 238,
+      "sha256": "ee774172abfbaab9556e113bf8bb0b65b06e8a9a895117dbd5643591e3dfe025"
+    },
+    {
+      "path": "dist/douyin/game.js",
+      "bytes": 37051,
+      "sha256": "07bb23fd8173b3fc636cfeac508b20e8a5f1628b9571797b84e22e28c3c5b0d8"
+    },
+    {
+      "path": "dist/douyin/game.json",
+      "bytes": 38,
+      "sha256": "adfce90c444cdbf96dc51598471759bca31feb5e936833b36847f3570fd4bca0"
+    },
+    {
+      "path": "dist/douyin/project.config.json",
+      "bytes": 196,
+      "sha256": "a3674768f721b201c53c31ff3686649b601f0eed6c98fc0600c222f054b1cfd0"
+    },
+    {
+      "path": "dist/douyin/assets/complete.wav",
+      "bytes": 13274,
+      "sha256": "b00300b288a4c5367db40129e63c4639b635aa2a24dadec66cefaf39677155dd"
+    },
+    {
+      "path": "dist/douyin/assets/cook.wav",
+      "bytes": 4454,
+      "sha256": "6bf9c5ad8e7fff39c4b87c2ca269ac2433221c8a1c8d85e17a8eb6dd954630e9"
+    },
+    {
+      "path": "dist/douyin/assets/error.wav",
+      "bytes": 7100,
+      "sha256": "5b677b5179bb28409c77d22b85fa70c1ee191f026d8e1e4c45b2ce35ed8bac84"
+    },
+    {
+      "path": "dist/douyin/assets/success.wav",
+      "bytes": 8422,
+      "sha256": "f6813a83e6c2374ed22bbf32fdb2fe4d4870560dd691427aaafb0d9ecd462dd3"
+    },
+    {
+      "path": "dist/douyin/assets/tap.wav",
+      "bytes": 2028,
+      "sha256": "5d91b8d5d7e016ed4c42054e607ec700b6e6ef16721b6adc03c14368bc68ce93"
+    }
+  ]
+}

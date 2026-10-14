@@ -1,0 +1,21 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> street-breakfast-shop@0.1.0 build:tt
+> node scripts/build-tt.mjs
+
+{
+  "output": "/workspace/shared/street-breakfast-shop/dist/douyin/",
+  "info": {
+    "inputs": [
+      "game.js",
+      "src/canvas-art.js",
+      "src/main.js",
+      "adapters/tt.js"
+    ],
+    "entry": "game.js",
+    "applicationId": null,
+    "browserAssetsIncluded": false,
+    "officialToolValidated": false,
+    "uploaded": false
+  }
+}

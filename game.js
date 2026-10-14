@@ -93,7 +93,7 @@ export function reduce(state, action) {
   }
   if (state.phase !== 'playing') return state;
   if (action.type === 'TOGGLE_INGREDIENT') {
-    if (dish.status !== 'raw' || !Object.hasOwn(INGREDIENTS, action.id)) return state;
+    if (dish.status !== 'raw' || !Object.prototype.hasOwnProperty.call(INGREDIENTS, action.id)) return state;
     return { ...state, feedback: '', dish: { ...dish, ingredients: dish.ingredients.includes(action.id) ? dish.ingredients.filter(x => x !== action.id) : [...dish.ingredients, action.id] } };
   }
   if (action.type === 'SET_TEXTURE') {
@@ -131,10 +131,10 @@ export const DEFAULT_PROGRESS = { version: VERSION, unlocked: 0, stars: [0, 0, 0
 export function parseProgress(raw) {
   try {
     const p = JSON.parse(raw);
-    if (!p || p.version !== VERSION) return structuredClone(DEFAULT_PROGRESS);
+    if (!p || p.version !== VERSION) return { ...DEFAULT_PROGRESS, stars: [...DEFAULT_PROGRESS.stars], best: [...DEFAULT_PROGRESS.best] };
     const cleanArray = (a, max) => Array.from({ length: 5 }, (_, i) => Number.isInteger(a?.[i]) && a[i] >= 0 && a[i] <= max ? a[i] : 0);
     return { version: VERSION, unlocked: Number.isInteger(p.unlocked) && p.unlocked >= 0 && p.unlocked < 5 ? p.unlocked : 0, stars: cleanArray(p.stars, 3), best: cleanArray(p.best, 10000), sound: typeof p.sound === 'boolean' ? p.sound : true };
-  } catch { return structuredClone(DEFAULT_PROGRESS); }
+  } catch { return { ...DEFAULT_PROGRESS, stars: [...DEFAULT_PROGRESS.stars], best: [...DEFAULT_PROGRESS.best] }; }
 }
 export function recordStage(progress, state) {
   if (state.phase !== 'stageComplete') return progress;

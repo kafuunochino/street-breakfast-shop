@@ -1,0 +1,56 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> street-breakfast-shop@0.1.0 check
+> node --check src/main.js && node --check src/canvas-art.js && node --check game.js && node --check server.mjs && node --test
+
+✔ Douyin candidate compiles, excludes H5 archive, and boots with mocked tt without browser globals (17.182717ms)
+✔ Canvas renderer boots welcome and enters play through pointer actions (5.068674ms)
+✔ pointer cancellation and release on a different button do not activate (2.8ms)
+✔ mismatched pointer ids cannot trigger an action (1.123812ms)
+✔ pause and resume exclude hidden time from cooking (9.068148ms)
+✔ opening instructions pauses cooking without discarding food (13.827766ms)
+✔ clear during cooking cannot produce a cooked empty pan (8.675417ms)
+✔ resize cancels a pending pointer gesture (0.910456ms)
+✔ storage failures are disclosed and do not block play or sound toggle (0.938007ms)
+✔ sound preference is written through platform storage (0.546097ms)
+✔ destroy unsubscribes lifecycle input and cancels frame scheduling (0.366102ms)
+✔ inspection cannot mutate actual game state (0.251311ms)
+✔ pause stops frame scheduling and resume restarts exactly one frame loop (0.666976ms)
+✔ all 19 orders complete through actual Canvas button pointer handlers (76.303895ms)
+✔ a second finger cannot steal or cancel the active first-finger gesture (0.666856ms)
+✔ three recipes have distinct, valid, duplicate-free ingredients (1.20391ms)
+✔ all five stages and 19 explicit orders reference valid recipes and people (0.258553ms)
+✔ invalid initial stage numbers safely fall back to first stage (0.220666ms)
+✔ each recipe accepts all 8 scallion / texture / packaging variants (0.518868ms)
+✔ missing and extra ingredients receive explicit explanations (0.204052ms)
+✔ duplicate ingredient entries cannot pass exact recipe validation (0.173437ms)
+✔ uncooked, wrong texture and wrong packaging are all diagnosed (0.203841ms)
+✔ unknown order fails safely (0.097254ms)
+✔ ingredient toggle adds then removes without mutating input (0.868224ms)
+✔ invalid selectors and unknown actions are ignored (0.299332ms)
+✔ empty dish cannot start cooking (0.321405ms)
+✔ cooking locks ingredients and texture, still allows packaging (0.215649ms)
+✔ stale cook token cannot finish the active dish (0.184573ms)
+✔ clearing while cooking cancels the old completion logically (0.175389ms)
+✔ restarting a stage invalidates old cooking completion even after a new cook (0.099818ms)
+✔ a correct order scores once, even when serve is repeated rapidly (1.018085ms)
+✔ wrong order stays active and can be remade successfully (0.216671ms)
+✔ wrong packaging can be corrected without recooking (0.133488ms)
+✔ failed serving resets combo, deducts five, and never goes below zero (0.086849ms)
+✔ combo bonus is capped at forty points (0.168079ms)
+✔ next order requires serving and clears dish while preserving score (0.136672ms)
+✔ all five stages complete and award three stars on perfect play (0.345601ms)
+✔ stage cannot advance early and final stage cannot overflow (0.135651ms)
+✔ star grading distinguishes unfinished, low score, recovered and perfect (0.089903ms)
+✔ broken, missing and unknown-version saves fall back safely (0.641198ms)
+✔ progress parser sanitizes values and drops unknown fields (0.278131ms)
+✔ recording complete stages unlocks next and preserves better results (0.231292ms)
+✔ final save survives serialization and keeps sound preference (0.367994ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 233.957456
