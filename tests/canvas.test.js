@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { startGame } from '../src/main.js';
-function harness({ failStorage = false } = {}) {
+import { createDouyinSidebar } from '../adapters/douyin-sidebar.js';
+function harness({ failStorage = false, sidebar = undefined } = {}) {
   const context=new Proxy({measureText:text=>({width:text.length*9})},{get:(obj,key)=>key in obj?obj[key]:()=>{},set:(obj,key,value)=>(obj[key]=value,true)});
   const callbacks={},frames=new Map(),store=new Map();let frame=0,clock=0;
   const platform={canvas:{getContext:()=>context},getSize:()=>({width:390,height:780,dpr:1}),onPointer:fn=>{callbacks.pointer=fn;return()=>delete callbacks.pointer;},onResize:fn=>{callbacks.resize=fn;return()=>delete callbacks.resize;},onPause:fn=>{callbacks.pause=fn;return()=>delete callbacks.pause;},onResume:fn=>{callbacks.resume=fn;return()=>delete callbacks.resume;},requestFrame:fn=>{frames.set(++frame,fn);return frame;},cancelFrame:id=>frames.delete(id),storage:{getItem:key=>{if(failStorage)throw Error('denied');return store.get(key)||null;},setItem:(key,value)=>{if(failStorage)throw Error('denied');store.set(key,value);}},audio:{play(){},setMuted(){}}};
+  if(sidebar)platform.sidebar=sidebar;
   const game=startGame(platform);
   function point(id,type='down',pointer=1){const b=game.inspect().buttons.find(b=>b.id===id);assert.ok(b,`button ${id} exists`);callbacks.pointer({type,x:Number(b.x)+b.w/2,y:b.y+b.h/2,id:pointer});}
   function click(id){point(id,'down');point(id,'up');}
@@ -43,3 +45,26 @@ test('all 19 orders complete through actual Canvas button pointer handlers',asyn
 });
 
 test('a second finger cannot steal or cancel the active first-finger gesture',()=>{const h=harness();open(h);h.point('ingredient-egg','down',1);h.point('ingredient-batter','down',2);h.callbacks.pointer({type:'cancel',x:0,y:0,id:2});h.point('ingredient-egg','up',1);h.point('ingredient-batter','up',2);assert.deepEqual(h.game.inspect().state.dish.ingredients,['egg']);h.game.destroy();});
+
+test('Canvas sidebar CTA requires explicit confirmation and does not change rewards or progress',async()=>{
+  let request,show,calls=0;const sidebar=createDouyinSidebar({onShow:fn=>show=fn,checkScene:options=>options.success({isExist:true}),navigateToScene:options=>{request=options;calls++;}});
+  const h=harness({sidebar});const before=h.game.inspect().progress;
+  h.click('sidebar-welcome');assert.equal(h.game.inspect().screen,'sidebar');assert.equal(calls,0);
+  h.click('sidebar-navigate');assert.equal(calls,1);assert.equal(h.game.inspect().sidebarState.pending,true);
+  assert.equal(h.game.inspect().buttons.find(x=>x.id==='sidebar-navigate').disabled,true);
+  request.success({});await Promise.resolve();assert.equal(h.game.inspect().sidebarState.enteredFromSidebar,false);
+  show({launch_from:'homepage',location:'sidebar_card'});assert.equal(h.game.inspect().sidebarState.enteredFromSidebar,true);
+  show({launch_from:'homepage',location:'ordinary'});assert.equal(h.game.inspect().sidebarState.enteredFromSidebar,false);
+  assert.deepEqual(h.game.inspect().progress,before);assert.equal(h.game.inspect().state.score,0);
+  h.click('close-sidebar');assert.equal(h.game.inspect().screen,'welcome');h.game.destroy();sidebar.destroy();
+});
+
+test('unsupported sidebar hides entry and ordinary game remains playable',()=>{
+  const sidebar=createDouyinSidebar({onShow(){},checkScene:options=>options.success({isExist:false}),navigateToScene(){throw Error('must not call');}});
+  const h=harness({sidebar});assert.ok(!h.game.inspect().buttons.some(x=>x.id==='sidebar-welcome'));open(h);assert.ok(!h.game.inspect().buttons.some(x=>x.id==='sidebar-open'));h.click('ingredient-egg');assert.deepEqual(h.game.inspect().state.dish.ingredients,['egg']);h.game.destroy();sidebar.destroy();
+});
+
+test('sidebar failure restores navigation button and can close back to current play',async()=>{
+  let request;const sidebar=createDouyinSidebar({onShow(){},checkScene:options=>options.success({isExist:true}),navigateToScene:options=>request=options});
+  const h=harness({sidebar});open(h);h.click('ingredient-egg');h.click('sidebar-open');h.click('sidebar-navigate');request.fail({errMsg:'not supported now'});await Promise.resolve();assert.equal(h.game.inspect().buttons.find(x=>x.id==='sidebar-navigate').disabled,false);h.click('close-sidebar');assert.equal(h.game.inspect().screen,'play');assert.deepEqual(h.game.inspect().state.dish.ingredients,['egg']);h.game.destroy();sidebar.destroy();
+});

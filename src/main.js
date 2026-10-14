@@ -12,6 +12,8 @@ export function startGame(platform) {
   let buttons = [], frameId, alive = true, paused = false, lastFrame = 0, cookElapsed = 0, activeToken = -1;
   let size = platform.getSize(), zoom = 1, ox = 0, oy = 0;
   const unsubscribers = [];
+  let sidebarState = platform.sidebar?.getState() || { available: false, checked: true, enteredFromSidebar: false, pending: false, error: null };
+  let sidebarMessage = "";
   platform.audio.setMuted(!progress.sound);
   function save() { try { platform.storage.setItem(SAVE_KEY, JSON.stringify(progress)); } catch { storageWarning = true; } }
   function dispatch(action) {
@@ -22,7 +24,7 @@ export function startGame(platform) {
     if (state.phase === 'stageComplete' && previous.phase !== 'stageComplete') { progress = recordStage(progress, state); save(); screen = 'result'; platform.audio.play('complete'); }
   }
   function open(name) { previousScreen = screen === 'play' ? 'play' : screen; screen = name; }
-  function close() { screen = previousScreen === 'welcome' ? 'welcome' : state.phase === 'stageComplete' ? 'result' : 'play'; }
+  function close() { screen = previousScreen; }
   function beginStage(index) { state = initialState(index); screen = 'day'; cookElapsed = 0; activeToken = -1; }
   function button(id, text, x, y, w, h, fn, opts = {}) {
     const { fill = C.paper, color = C.ink, stroke = C.line, disabled = false, selected = false, size: fontSize = 12 } = opts;
@@ -41,6 +43,7 @@ export function startGame(platform) {
     const order=getOrder(state), customer=CUSTOMERS[order.customer], recipe=RECIPES[order.recipe], stage=STAGES[state.stage];
     top();streetArt(ctx,0,58,390,93,state.stage);
     roundRect(ctx,14,67,110,21,9,'#fff9e6de');label(ctx,`${stage.time} · ${stage.weather}`,69,78,9,'#7d826c','normal','center');
+    if(sidebarState.available)button('sidebar-open','侧边栏再来 ›',243,107,133,34,()=>{sidebarMessage='';open('sidebar');},{fill:C.paper,color:C.green,size:11});
     roundRect(ctx,14,160,362,120,12,C.paper,C.line);
     avatar(ctx,order.customer,40,188,customer.color,42);label(ctx,customer.name,70,181,14,C.ink,'bold');label(ctx,customer.role,70,199,9,C.muted);
     label(ctx,recipe.name,360,186,14,C.coral,'bold','right');
@@ -90,7 +93,18 @@ export function startGame(platform) {
       wrapped(ctx,'一间小铺，五位街坊。听清口味，煎一份热乎的早餐，让每个人记住你的心意。',48,y+204,294,13,'#7b836c',23,3);
       label(ctx,'选食材  →  煎一煎  →  装好出餐',195,y+285,12,C.green,'bold','center');
       button('start',progress.unlocked>0?'继续开门营业':'开门营业',48,y+316,294,49,()=>{screen='day';platform.audio.play('tap');},{fill:C.coral,color:C.paper,stroke:null,size:15});
-      label(ctx,'原创试玩 · 5 个清晨 · 无广告 / 无支付',195,y+389,10,C.muted,'normal','center');
+      if(sidebarState.available)button('sidebar-welcome','从侧边栏再来 ›',48,y+374,294,34,()=>{sidebarMessage='';open('sidebar');},{fill:'transparent',stroke:null,color:C.green,size:11});
+      else label(ctx,'原创试玩 · 5 个清晨 · 无广告 / 无支付',195,y+389,10,C.muted,'normal','center');
+    } else if(screen==='sidebar') {
+      const y=modalBase('下次早安，从这里开始','抖音侧边栏 · 可选入口',410);
+      wrapped(ctx,'你可以通过抖音侧边栏再找到早餐铺。这里不发放奖励，也不会改变分数或关卡进度。',48,y+119,294,13,C.green,23,3);
+      const status=sidebarState.enteredFromSidebar?'本次确实从侧边栏回到早餐铺，欢迎回来。':sidebarMessage||(sidebarState.pending?'正在请求打开侧边栏…':sidebarState.available?'点下面的按钮，前往抖音侧边栏。':'当前环境暂不支持侧边栏，仍可正常游玩。');
+      wrapped(ctx,status,48,y+210,294,12,C.muted,21,3);
+      button('sidebar-navigate',sidebarState.pending?'正在打开…':'前往抖音侧边栏',48,y+285,294,47,()=>{
+        sidebarMessage='';
+        platform.sidebar.navigate().then(ok=>{if(!alive)return;sidebarMessage=ok?'已请求打开侧边栏；返回后可以继续游玩。':'本次没有完成侧边栏跳转，你仍可正常游玩。';drawImmediate();});
+      },{fill:C.green,color:C.paper,stroke:null,size:13,disabled:!sidebarState.available||sidebarState.pending});
+      button('close-sidebar','回到早餐铺',48,y+344,294,40,close,{fill:'transparent',stroke:null,color:C.muted,size:12});
     } else if(screen==='day') {
       const y=modalBase(stage.title,`第 ${state.stage+1} 个清晨 · ${stage.time}`,342);
       wrapped(ctx,stage.note,48,y+114,294,14,'#7b836c',25,3);label(ctx,`今天要做 ${stage.orders.length} 份早餐`,48,y+203,12,C.green);
@@ -145,10 +159,11 @@ export function startGame(platform) {
   unsubscribers.push(platform.onResize(()=>{size=platform.getSize();pointerDown=null;drawImmediate();}));
   unsubscribers.push(platform.onPause(()=>{paused=true;pointerDown=null;lastFrame=0;platform.cancelFrame(frameId);}));
   unsubscribers.push(platform.onResume(()=>{paused=false;lastFrame=0;drawImmediate();}));
+  if(platform.sidebar)unsubscribers.push(platform.sidebar.subscribe(next=>{sidebarState=next;drawImmediate();}));
   draw();
   return {
     destroy(){alive=false;platform.cancelFrame(frameId);unsubscribers.forEach(fn=>fn());},
     // Read-only diagnostics, useful for deterministic integration tests. No action injection.
-    inspect(){return JSON.parse(JSON.stringify({state,screen,progress,storageWarning,buttons:buttons.map(({id,x,y,w,h,disabled})=>({id,x,y,w,h,disabled})),viewport:{zoom,ox,oy}}));}
+    inspect(){return JSON.parse(JSON.stringify({state,screen,progress,storageWarning,sidebarState,sidebarMessage,buttons:buttons.map(({id,x,y,w,h,disabled})=>({id,x,y,w,h,disabled})),viewport:{zoom,ox,oy}}));}
   };
 }

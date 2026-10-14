@@ -17,3 +17,7 @@ Required platform fields:
 Renderer applies DPR once with `ctx.setTransform`, then fits its 390 × 780 portrait logical layout in the available viewport. Resize discards pending pointer gestures. Pause stops cooking progress; resume does not advance time spent hidden.
 
 Adapters are copied from the shared runtime proof. A source adapter is not official platform certification. The `tt` build still requires official developer-tool and real-device testing before claiming Douyin compatibility.
+
+## Optional Douyin sidebar
+
+`platform.sidebar` may provide `getState()`, `subscribe(fn)`, `navigate()` and `destroy()`. The generated tt entry registers this feature synchronously before creating the Canvas. The renderer shows a real Canvas CTA only when available; an explicit confirmation button calls navigation. Returning via sidebar is determined by the latest exact onShow fields, never navigation success, and no reward is promised. Browser platforms may omit the feature entirely.

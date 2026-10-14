@@ -31,9 +31,21 @@ npm run check
 npm run build:tt
 ```
 
-当前 43 项 Node 测试全部通过：28 项规则测试 + 14 项 Canvas 生命周期 / 输入 / 存储故障 / 完整通关测试 + 1 项抖音候选构建加载测试。浏览器流程测试脚本为 `scripts/browser-smoke.mjs`，需要能够访问本地服务并启动 Chromium 的环境；没有跑完该脚本不能宣称真实浏览器通过。结果与限制见 `TEST_RESULTS.md`。
+当前 57 项 Node 测试全部通过：28 项规则测试、17 项 Canvas 交互 / 生命周期测试、9 项侧边栏能力与回访测试、3 项构建 / 配置 / 完整产物调用测试。浏览器流程测试脚本为 `scripts/browser-smoke.mjs`，需要能够访问本地服务并启动 Chromium 的环境；没有跑完该脚本不能宣称真实浏览器通过。结果与限制见 `TEST_RESULTS.md`。
 
-`npm run build:tt` 生成 `dist/douyin/`，含入口、配置与短音效，不含 HTML / CSS / 归档内容。AppID 故意留空，构建产物只是候选，尚未在官方工具或真机验证、未上传。当前使用固定文件 Demo 装配脚本，并非通用 ESM 打包器；扩展依赖或模块语法前应换用经过锁版本验证的构建工具。
+`npm run build:tt` 生成 `dist/douyin/`，含入口、配置与短音效，不含 HTML / CSS / 归档内容。默认使用已核实创建的非敏感 AppID `ttebf69d4b758f209102`，项目名为“街角早餐铺”，版本 `0.1.0`。构建产物只是待上传候选，尚未完成官方工具或真机运行验证。当前使用固定文件 Demo 装配脚本，并非通用 ESM 打包器；扩展依赖或模块语法前应换用经过锁版本验证的构建工具。
+
+## 抖音候选配置与冻结
+
+`config/douyin.json` 保存非敏感 AppID、项目名、版本和说明，不包含令牌、联系资料或登录信息。`DOUYIN_APP_ID` 可覆盖构建 AppID；未设置时使用核实配置，空字符串仅供模拟测试，不能上传。测试结束会恢复真实 AppID 候选。
+
+```sh
+DOUYIN_APP_ID=ttebf69d4b758f209102 npm run build:tt
+```
+
+构建产生 `dist/douyin-build-manifest.json`，记录实际 AppID、版本、每个待上传文件和关键源码的 SHA-256。上传前将最终清单冻结在 `artifacts/douyin-candidate-manifest.json`，同步源码并核验远端提交后再交上传流程。构建脚本不登录、不上传；“上传成功”也不等于真机通过或正式发布。
+
+侧边栏是可选真实入口：同步注册最新 `tt.onShow`，用 `tt.checkScene` 检测能力；支持时显示 Canvas 入口，玩家阅读说明后点明确按钮才调用 `tt.navigateToScene`。失败或取消会恢复，不支持时隐藏入口且照常游玩。只有最新 `onShow` 同时包含 `homepage` 和 `sidebar_card` 才显示“本次从侧边栏回来”；导航 success 不假称回访。没有奖励，也不承诺平台审核通过。
 
 ## 工程结构
 
@@ -43,6 +55,8 @@ npm run build:tt
 - `src/platform-contract.md`：平台抽象契约。
 - `adapters/browser.js`：浏览器 DOM / 指针 / 音效 / 存储 / 生命周期隔离层。
 - `adapters/tt.js`：抖音运行时适配器候选，尚不代表官方验证完成。
+- `adapters/douyin-sidebar.js`：真实能力检测、导航与最新前台来源状态。
+- `config/douyin.json`：核实的非敏感应用配置。
 - `index.html`：只挂载 Canvas 的浏览器启动页，不含 DOM 玩法控件。
 - `assets/*.wav`：原创本地合成短音效。
 - `tests/`：Node 内建测试。
@@ -59,7 +73,7 @@ npm run build:tt
 
 1. 候选入口、配置和模块装配已生成，浏览器启动页与归档草稿已排除；仍需核对真实平台配置和运行行为。
 2. 在官方开发者工具和真机中检查 Canvas、字体、输入、安全区、生命周期、音频、存储、包体和性能。
-3. 使用实际已创建应用的 AppID，核对主体、测试者、隐私和平台要求，再上传开发 / 体验版。不得虚构 AppID 或声称未执行的上传成功。
+3. 真实应用 AppID 已写入候选，仍需核对主体、测试者、隐私和平台要求，再由获授权流程上传开发 / 体验版。不得声称未执行的上传成功。
 4. 遇到登录、资质或需要人工确认的步骤，应准确报告并取得必要授权。当前不接广告、不收费。
 5. 微信兼容是后续目标；共享规则与平台抽象可复用，但 wx 适配器、配置和真机验证尚未完成。
 
