@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { startGame } from '../src/main.js';
 import { createDouyinSidebar } from '../adapters/douyin-sidebar.js';
-function harness({ failStorage = false, sidebar = undefined } = {}) {
+function harness({ failStorage = false, sidebar = undefined, width = 390, height = 780 } = {}) {
   const context=new Proxy({measureText:text=>({width:text.length*9})},{get:(obj,key)=>key in obj?obj[key]:()=>{},set:(obj,key,value)=>(obj[key]=value,true)});
   const callbacks={},frames=new Map(),store=new Map();let frame=0,clock=0;
-  const platform={canvas:{getContext:()=>context},getSize:()=>({width:390,height:780,dpr:1}),onPointer:fn=>{callbacks.pointer=fn;return()=>delete callbacks.pointer;},onResize:fn=>{callbacks.resize=fn;return()=>delete callbacks.resize;},onPause:fn=>{callbacks.pause=fn;return()=>delete callbacks.pause;},onResume:fn=>{callbacks.resume=fn;return()=>delete callbacks.resume;},requestFrame:fn=>{frames.set(++frame,fn);return frame;},cancelFrame:id=>frames.delete(id),storage:{getItem:key=>{if(failStorage)throw Error('denied');return store.get(key)||null;},setItem:(key,value)=>{if(failStorage)throw Error('denied');store.set(key,value);}},audio:{play(){},setMuted(){}}};
+  const platform={canvas:{getContext:()=>context},getSize:()=>({width,height,dpr:1}),onPointer:fn=>{callbacks.pointer=fn;return()=>delete callbacks.pointer;},onResize:fn=>{callbacks.resize=fn;return()=>delete callbacks.resize;},onPause:fn=>{callbacks.pause=fn;return()=>delete callbacks.pause;},onResume:fn=>{callbacks.resume=fn;return()=>delete callbacks.resume;},requestFrame:fn=>{frames.set(++frame,fn);return frame;},cancelFrame:id=>frames.delete(id),storage:{getItem:key=>{if(failStorage)throw Error('denied');return store.get(key)||null;},setItem:(key,value)=>{if(failStorage)throw Error('denied');store.set(key,value);}},audio:{play(){},setMuted(){}}};
   if(sidebar)platform.sidebar=sidebar;
   const game=startGame(platform);
-  function point(id,type='down',pointer=1){const b=game.inspect().buttons.find(b=>b.id===id);assert.ok(b,`button ${id} exists`);callbacks.pointer({type,x:Number(b.x)+b.w/2,y:b.y+b.h/2,id:pointer});}
+  function point(id,type='down',pointer=1){const b=game.inspect().buttons.find(b=>b.id===id);assert.ok(b,`button ${id} exists`);const {zoom,ox,oy}=game.inspect().viewport;callbacks.pointer({type,x:ox+(Number(b.x)+b.w/2)*zoom,y:oy+(b.y+b.h/2)*zoom,id:pointer});}
   function click(id){point(id,'down');point(id,'up');}
   function tick(ms){for(let i=0;i<ms/50;i++){clock+=50;const all=[...frames.values()];frames.clear();all.forEach(fn=>fn(clock));}}
   return {game,platform,callbacks,frames,store,click,point,tick};
@@ -67,4 +67,16 @@ test('unsupported sidebar hides entry and ordinary game remains playable',()=>{
 test('sidebar failure restores navigation button and can close back to current play',async()=>{
   let request;const sidebar=createDouyinSidebar({onShow(){},checkScene:options=>options.success({isExist:true}),navigateToScene:options=>request=options});
   const h=harness({sidebar});open(h);h.click('ingredient-egg');h.click('sidebar-open');h.click('sidebar-navigate');request.fail({errMsg:'not supported now'});await Promise.resolve();assert.equal(h.game.inspect().buttons.find(x=>x.id==='sidebar-navigate').disabled,false);h.click('close-sidebar');assert.equal(h.game.inspect().screen,'play');assert.deepEqual(h.game.inspect().state.dish.ingredients,['egg']);h.game.destroy();sidebar.destroy();
+});
+
+test('user extra ingredient cooked path has a reachable large reset, recovers and advances at mobile and desktop sizes',()=>{
+  for(const [width,height] of [[320,568],[360,740],[390,844],[1100,760],[1440,900]]){
+    const h=harness({width,height});open(h);
+    for(const id of ['batter','egg','crisp','cheese'])h.click(`ingredient-${id}`);h.click('cook');h.tick(2100);
+    let snapshot=h.game.inspect();assert.equal(snapshot.state.dish.status,'cooked');assert.match(snapshot.state.feedback,/倒掉重做/);
+    const reset=snapshot.buttons.find(x=>x.id==='clear'),{zoom,ox,oy}=snapshot.viewport;assert.equal(reset.disabled,false);assert.ok(reset.w*zoom>=44&&reset.h*zoom>=44);assert.ok(ox+reset.x*zoom>=0&&oy+reset.y*zoom>=0&&ox+(reset.x+reset.w)*zoom<=width&&oy+(reset.y+reset.h)*zoom<=height);
+    for(const other of snapshot.buttons.filter(b=>b.id!=='clear'))assert.ok(reset.x+reset.w<=other.x||other.x+other.w<=reset.x||reset.y+reset.h<=other.y||other.y+other.h<=reset.y,`reset overlaps ${other.id}`);
+    h.click('serve');assert.equal(h.game.inspect().state.phase,'playing');const score=h.game.inspect().state.score;h.click('clear');assert.equal(h.game.inspect().state.score,score);assert.deepEqual(h.game.inspect().state.dish.ingredients,[]);
+    for(const id of ['batter','egg','crisp'])h.click(`ingredient-${id}`);h.click('cook');h.tick(2100);h.click('serve');assert.equal(h.game.inspect().state.phase,'served');const earned=h.game.inspect().state.score;h.click('clear');assert.equal(h.game.inspect().state.score,earned);assert.equal(h.game.inspect().state.phase,'served');h.click('serve');assert.equal(h.game.inspect().state.orderIndex,1);h.game.destroy();
+  }
 });

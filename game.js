@@ -72,6 +72,12 @@ export function evaluateDish(order, dish) {
   if (dish.packaging !== order.packaging) errors.push(`这份需要${order.packaging === 'bag' ? '打包带走' : '堂食装盘'}。`);
   return { ok: errors.length === 0, errors, points: errors.length ? 0 : 100 };
 }
+/** Cooked ingredients and heat cannot be undone; packaging can still be corrected. */
+export function dishNeedsRestart(order, dish) {
+  if (!order || !RECIPES[order.recipe] || dish.status === 'raw') return false;
+  const required = requiredIngredients(order);
+  return dish.texture !== order.texture || dish.ingredients.length !== required.length || new Set(dish.ingredients).size !== dish.ingredients.length || required.some(id => !dish.ingredients.includes(id)) || dish.ingredients.some(id => !required.includes(id));
+}
 /** Explicit state machine: a served order cannot award points twice. */
 export function reduce(state, action) {
   if (!state || !action || typeof action.type !== 'string') return state;
@@ -91,6 +97,7 @@ export function reduce(state, action) {
     if (state.orderIndex + 1 >= STAGES[state.stage].orders.length) return { ...state, phase: 'stageComplete', feedback: '' };
     return { ...state, orderIndex: state.orderIndex + 1, phase: 'playing', dish: { ...emptyDish(), token: dish.token + 1 }, feedback: '', feedbackType: 'info' };
   }
+  if (action.type === 'CLEAR' && ['playing', 'served'].includes(state.phase)) return { ...state, dish: { ...emptyDish(), token: dish.token + 1 }, feedback: state.phase === 'served' ? '台面收拾好了。点“下一位”继续，不会重复记分。' : '已重新备料，不扣分。当前订单还在，请按配方再做一份。', feedbackType: 'info' };
   if (state.phase !== 'playing') return state;
   if (action.type === 'TOGGLE_INGREDIENT') {
     if (dish.status !== 'raw' || !Object.prototype.hasOwnProperty.call(INGREDIENTS, action.id)) return state;
@@ -104,20 +111,25 @@ export function reduce(state, action) {
     if (!['plate', 'bag'].includes(action.value)) return state;
     return { ...state, feedback: '', dish: { ...dish, packaging: action.value } };
   }
-  if (action.type === 'CLEAR') return { ...state, dish: { ...emptyDish(), token: dish.token + 1 }, feedback: '料理台收拾好了，再试一次。', feedbackType: 'info' };
   if (action.type === 'COOK') {
     if (dish.status !== 'raw' || dish.ingredients.length === 0) return { ...state, feedback: '先点选食材，再开火。', feedbackType: 'error' };
     return { ...state, feedback: '', dish: { ...dish, status: 'cooking', token: dish.token + 1 } };
   }
   if (action.type === 'COOK_DONE') {
     if (dish.status !== 'cooking' || action.token !== dish.token) return state;
-    return { ...state, dish: { ...dish, status: 'cooked' }, feedback: '香气刚刚好！选好装盘方式，就能出餐。', feedbackType: 'info' };
+    const cooked = { ...dish, status: 'cooked' };
+    const current = getOrder(state), restart = dishNeedsRestart(current, cooked);
+    const verdict = evaluateDish(current, cooked);
+    return { ...state, dish: cooked, feedback: restart ? '配料或火候不符，请点“倒掉重做”（不扣分）。熟食不能退回原料。' : verdict.ok ? '香气刚刚好！现在可以出餐；做错也能点“倒掉重做”。' : '早餐已煎好，调整堂食/打包方式后就能出餐。', feedbackType: restart ? 'error' : 'info' };
   }
   if (action.type === 'SERVE') {
     const current = getOrder(state);
     if (!current || state.servedIds.includes(current.id)) return state;
     const result = evaluateDish(current, dish);
-    if (!result.ok) return { ...state, combo: 0, mistakes: state.mistakes + 1, score: Math.max(0, state.score - 5), feedback: result.errors.join(' '), feedbackType: 'error' };
+    if (!result.ok) {
+      const recovery = dishNeedsRestart(current, dish) ? '请点“倒掉重做”（不扣分），重做当前订单。' : dish.status === 'raw' ? '请先按配方调整食材，再开火煎制。' : dish.status === 'cooking' ? '还在煎制，请稍等；做错可点“倒掉重做”。' : '请调整堂食/打包方式后再出餐。';
+      return { ...state, combo: 0, mistakes: state.mistakes + 1, score: Math.max(0, state.score - 5), feedback: recovery + ' ' + result.errors.join(' '), feedbackType: 'error' };
+    }
     const bonus = Math.min(state.combo, 4) * 10;
     return { ...state, phase: 'served', score: state.score + result.points + bonus, combo: state.combo + 1, servedIds: [...state.servedIds, current.id], feedback: `心意满分！+${result.points + bonus}`, feedbackType: 'success' };
   }

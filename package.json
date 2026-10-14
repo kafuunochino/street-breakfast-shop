@@ -1,6 +1,6 @@
 {
   "name": "street-breakfast-shop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "街角早餐铺：有烟火气、有明确口味要求的原创早餐经营小游戏测试原型",
   "type": "module",
@@ -9,7 +9,8 @@
     "serve": "node server.mjs",
     "check": "node --check src/main.js && node --check src/canvas-art.js && node --check game.js && node --check server.mjs && node --test",
     "build:tt": "node scripts/build-tt.mjs",
-    "test:browser": "node scripts/browser-smoke.mjs"
+    "test:browser": "node scripts/browser-smoke.mjs",
+    "build:offline": "node scripts/build-offline.mjs"
   },
   "engines": {
     "node": ">=20"

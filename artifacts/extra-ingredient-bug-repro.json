@@ -1,0 +1,32 @@
+{
+  "issue": "Extra ingredient cooked dish recovery was not clear or discoverable",
+  "reportedUserSteps": "多放材料，烹饪后没法放回去，也没法给顾客",
+  "kind": "Exact delivered and rebuilt HTML scripts executed in Node VM mock browser, not visual browser QA",
+  "actualBrowserQa": false,
+  "old": {
+    "sha256": "b8b412757fc2e06e1a1bc756bdbd2b3833e2393229f9888681127a01ab3fe86b",
+    "cookedFeedback": "香气刚刚好！选好装盘方式，就能出餐。",
+    "cookedIngredientReversalDisabled": true,
+    "wrongDishRejected": true,
+    "rejectedFeedback": "多放了：芝士。",
+    "resetEnabled": true,
+    "resetPhysicalPixels": {
+      "width": 65.53846153846153,
+      "height": 24.03076923076923
+    },
+    "resetWorksWhenIntentionallyTargeted": true
+  },
+  "fixed": {
+    "sha256": "2c2452f544cabd818acaac76ead161c984934a49aad27d61f84994f321ba3616",
+    "cookedFeedback": "配料或火候不符，请点“倒掉重做”（不扣分）。熟食不能退回原料。",
+    "cookedIngredientReversalDisabled": true,
+    "wrongDishRejected": true,
+    "rejectedFeedback": "请点“倒掉重做”（不扣分），重做当前订单。 多放了：芝士。",
+    "resetEnabled": true,
+    "resetPhysicalPixels": {
+      "width": 62.62564102564102,
+      "height": 45.148717948717945
+    },
+    "resetWorksWhenIntentionallyTargeted": true
+  }
+}

@@ -1,4 +1,4 @@
-import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, reduce, parseProgress, recordStage, stageStars } from '../game.js';
+import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars } from '../game.js';
 import { C, roundRect, circle, ellipse, line, label, wrapped, ingredientArt, foodArt, avatar, streetArt } from './canvas-art.js';
 
 const SAVE_KEY = 'street-breakfast-shop:progress:v1';
@@ -55,20 +55,22 @@ export function startGame(platform) {
     label(ctx,'连续好评',250,298,9,C.muted);label(ctx,`${state.combo} 份`,250,316,20,C.green);
     label(ctx,`${state.orderIndex+1}/${stage.orders.length}`,371,304,11,C.muted,'normal','right');
     const done=state.servedIds.length/stage.orders.length;roundRect(ctx,14,336,362,3,2,C.line);if(done)roundRect(ctx,14,336,362*done,3,2,'#a4b78d');
-    label(ctx,'01  点选食材',14,353,12,C.ink,'bold');label(ctx,'再点一次可以撤回',375,353,9,C.muted,'normal','right');
+    label(ctx,'01  点选食材',14,353,12,C.ink,'bold');label(ctx,state.phase==='served'?'已出餐，可收拾台面':state.dish.status==='raw'?'再点一次撤回 · 做错可清空':'已下锅，改配料请点“倒掉重做”',375,353,9,state.dish.status==='raw'?C.muted:C.coral,'normal','right');
     Object.keys(INGREDIENTS).forEach((id,i)=>{
-      const x=14+(i%4)*92,y=367+Math.floor(i/4)*69,w=i===6?178:86;
+      const x=14+(i%4)*92,y=367+Math.floor(i/4)*69,w=86;
       button(`ingredient-${id}`,'',x,y,w,62,()=>dispatch({type:'TOGGLE_INGREDIENT',id}),{fill:'#f3efdf',selected:state.dish.ingredients.includes(id),disabled:state.dish.status!=='raw'||state.phase!=='playing'});
       ingredientArt(ctx,id,x+w/2,y+23,.67);label(ctx,INGREDIENTS[id],x+w/2,y+49,10,C.ink,'normal','center');
       if(state.dish.ingredients.includes(id)){circle(ctx,x+w-11,y+10,7,C.green);label(ctx,'✓',x+w-11,y+10,9,C.paper,'bold','center');}
     });
+    button('clear',state.phase==='served'?'收拾台面':state.dish.status==='raw'?'清空食材':'倒掉重做',290,436,86,62,()=>dispatch({type:'CLEAR'}),{fill:C.coral,color:C.paper,stroke:'#a5503c',size:14,bold:true,disabled:!['playing','served'].includes(state.phase)});
+    label(ctx,'不扣分',333,486,8,C.paper,'normal','center');
     roundRect(ctx,14,506,362,27,5,'#f2ecd9');label(ctx,'配方',24,520,9,C.coral);label(ctx,recipe.ingredients.map(id=>INGREDIENTS[id]).join(' + '),57,520,10,'#8f825e');
     button('recipes','全部 ›',312,503,64,33,()=>open('recipes'),{fill:'transparent',stroke:null,size:10,color:C.green});
     label(ctx,'02  用心煎好',14,551,12,C.ink,'bold');
-    button('clear','↺ 清空',286,539,90,33,()=>dispatch({type:'CLEAR'}),{fill:'transparent',stroke:null,size:10,color:C.muted,disabled:state.phase!=='playing'});
+    label(ctx,'做错了？点红色重做按钮',375,551,9,C.coral,'normal','right');
     ellipse(ctx,123,622,105,48,'#b9af91');ellipse(ctx,123,617,100,44,'#4e5945');
     foodArt(ctx,state.dish,123,616,.88);
-    label(ctx,state.dish.status==='cooking'?'滋啦滋啦，香气快好了…':state.dish.status==='cooked'?'煎好啦！可以装盘出餐':'',123,649,9,'#d3d8b7','normal','center');
+    label(ctx,state.dish.status==='cooking'?'滋啦滋啦，香气快好了…':state.dish.status==='cooked'?(dishNeedsRestart(order,state.dish)?'配料/火候不符，请倒掉重做':'煎好啦，确认包装再出餐'):'',123,649,9,'#d3d8b7','normal','center');
     if(state.dish.status==='cooking')for(let i=0;i<3;i++){const yy=583-((cookElapsed/50+i*9)%20);line(ctx,100+i*20,yy,103+i*20,yy-12,'#ece4b7',2);}
     button('texture-soft','普通',246,577,61,34,()=>dispatch({type:'SET_TEXTURE',value:'soft'}),{selected:state.dish.texture==='soft',size:11,disabled:state.dish.status!=='raw'||state.phase!=='playing'});
     button('texture-crisp','焦脆',313,577,63,34,()=>dispatch({type:'SET_TEXTURE',value:'crisp'}),{selected:state.dish.texture==='crisp',size:11,disabled:state.dish.status!=='raw'||state.phase!=='playing'});
@@ -111,7 +113,7 @@ export function startGame(platform) {
       button('open-day','系好围裙，开工',48,y+251,294,48,()=>{screen='play';},{fill:C.green,color:C.paper,stroke:null,size:14});
     } else if(screen==='help') {
       const y=modalBase('慢慢做，也能做得好。','玩法小贴士',465);
-      const tips=[['01','看订单','对白下方标明葱花、火候和包装要求。'],['02','按配方选食材','加葱另点葱花；多点一次可撤回。'],['03','选火候后开火','煎好再选堂食或打包，然后递上早餐。'],['04','失误可以重来','错单扣 5 分、不跳单。清空后再做。']];
+      const tips=[['01','看订单','对白下方标明葱花、火候和包装要求。'],['02','按配方选食材','加葱另点葱花；多点一次可撤回。'],['03','选火候后开火','煎好再选堂食或打包，然后递上早餐。'],['04','熟食也能重新做','点红色“倒掉重做”，不扣分、不换单。']];
       tips.forEach(([n,t,d],i)=>{label(ctx,n,49,y+117+i*65,14,C.coral);label(ctx,t,82,y+111+i*65,13,C.ink,'bold');wrapped(ctx,d,82,y+132+i*65,235,11,C.muted,17,2);});
       button('close-help','知道啦',48,y+390,294,48,close,{fill:C.green,color:C.paper,stroke:null});
     } else if(screen==='recipes') {

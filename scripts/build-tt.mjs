@@ -15,7 +15,7 @@ export async function buildDouyin(options = {}) {
   for (const path of inputs) {
     let source = await readFile(new URL(path, root), 'utf8');
     const expectedImports = path === 'src/main.js' ? [
-      "import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, reduce, parseProgress, recordStage, stageStars } from '../game.js';",
+      "import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars } from '../game.js';",
       "import { C, roundRect, circle, ellipse, line, label, wrapped, ingredientArt, foodArt, avatar, streetArt } from './canvas-art.js';"
     ] : [];
     const imports = source.match(/^import[^\n]*$/gm) || [];

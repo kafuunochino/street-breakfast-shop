@@ -244,3 +244,35 @@ test('final save survives serialization and keeps sound preference', () => {
   assert.deepEqual(parseProgress(JSON.stringify(p)), p);
   assert.deepEqual(p.stars, [3, 3, 3, 3, 3]); assert.equal(p.sound, false);
 });
+
+test('every recipe rejects every extra ingredient when cooked, then clears free and serves the correct current order',()=>{
+  for(const recipe of Object.keys(RECIPES)){
+    let stageIndex,orderIndex;for(let s=0;s<STAGES.length;s++){const o=STAGES[s].orders.findIndex((order,i)=>order.recipe===recipe&&i<STAGES[s].orders.length-1);if(o>=0){stageIndex=s;orderIndex=o;break;}}
+    for(const extra of Object.keys(INGREDIENTS).filter(id=>!requiredIngredients(STAGES[stageIndex].orders[orderIndex]).includes(id))){
+      let state={...initialState(stageIndex),orderIndex,score:100};const order=getOrder(state);
+      for(const id of [...requiredIngredients(order),extra])state=reduce(state,{type:'TOGGLE_INGREDIENT',id});
+      state=reduce(state,{type:'SET_TEXTURE',value:order.texture});state=reduce(state,{type:'SET_PACKAGING',value:order.packaging});
+      state=reduce(state,{type:'COOK'});const token=state.dish.token;state=reduce(state,{type:'COOK_DONE',token});
+      assert.match(state.feedback,/倒掉重做/);assert.equal(state.mistakes,0,'cooking a mistake does not itself punish');
+      state=reduce(state,{type:'SERVE'});assert.equal(state.phase,'playing');assert.equal(state.servedIds.length,0);assert.match(state.feedback,/倒掉重做/);
+      const before=state;state=reduce(state,{type:'CLEAR'});assert.equal(state.score,before.score);assert.equal(state.mistakes,before.mistakes);assert.equal(state.orderIndex,orderIndex);assert.equal(state.dish.status,'raw');
+      assert.equal(reduce(state,{type:'COOK_DONE',token}),state,'stale cook cannot revive discarded food');
+      state=reduce(prepare(state),{type:'SERVE'});assert.equal(state.phase,'served');state=reduce(state,{type:'NEXT_ORDER'});assert.equal(state.orderIndex,orderIndex+1);
+    }
+  }
+});
+
+test('clear is safe in raw cooking cooked and served states without deleting earned progress',()=>{
+  for(const phase of ['raw','cooking','cooked','served']){
+    let state={...initialState(),score:100};state=reduce(state,{type:'TOGGLE_INGREDIENT',id:'egg'});
+    if(phase==='cooking')state=reduce(state,{type:'COOK'});
+    if(phase==='cooked'||phase==='served'){state=reduce(state,{type:'CLEAR'});state=prepare(state);}
+    if(phase==='served')state=reduce(state,{type:'SERVE'});
+    const before=state;state=reduce(state,{type:'CLEAR'});assert.equal(state.score,before.score);assert.deepEqual(state.servedIds,before.servedIds);assert.equal(state.phase,before.phase);assert.deepEqual(state.dish.ingredients,[]);assert.equal(state.dish.status,'raw');assert.ok(state.dish.token>before.dish.token);
+    if(phase==='served'){assert.equal(reduce(state,{type:'SERVE'}).score,state.score);assert.equal(reduce(state,{type:'NEXT_ORDER'}).orderIndex,1);}
+  }
+});
+
+test('cooked packaging-only error requests packaging correction, not discarding food',()=>{
+  let state=prepare(initialState());state=reduce(state,{type:'SET_PACKAGING',value:'bag'});state=reduce(state,{type:'SERVE'});assert.match(state.feedback,/调整堂食\/打包/);assert.doesNotMatch(state.feedback,/倒掉重做/);state=reduce(state,{type:'SET_PACKAGING',value:'plate'});assert.equal(reduce(state,{type:'SERVE'}).phase,'served');
+});

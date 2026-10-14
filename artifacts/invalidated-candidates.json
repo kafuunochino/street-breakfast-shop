@@ -1,0 +1,18 @@
+{
+  "invalidatedOn": "2026-10-14",
+  "reason": "User-reported extra-ingredient cooked dish had misleading instructions and an inconspicuous recovery control. Replaced by 0.1.1 recovery fix.",
+  "invalidatedCandidates": [
+    {
+      "version": "0.1.0",
+      "sourceCommit": "93f71776275b107d82b1ccddd885fff3102503f4",
+      "manifestSha256": "824a9fad38d3abb73181133d30886b3baf0b6f162d415e768040acb67d544aa4",
+      "gameJsSha256": "01a567cec438bedba0aabe6345645ea8f1f04d3de088be349ad9748927fc8d83",
+      "offlineHtmlSha256": "b8b412757fc2e06e1a1bc756bdbd2b3833e2393229f9888681127a01ab3fe86b",
+      "uploadAllowed": false,
+      "uploadStatus": "Breakfast candidate was not uploaded, as confirmed by the parent task."
+    }
+  ],
+  "replacementVersion": "0.1.1",
+  "replacementManifest": "artifacts/douyin-candidate-manifest.json",
+  "rule": "Do not upload or redeliver an invalidated candidate; verify the replacement source commit and exact file hashes first."
+}

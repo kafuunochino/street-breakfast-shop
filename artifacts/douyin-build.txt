@@ -1,6 +1,6 @@
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
-> street-breakfast-shop@0.1.0 build:tt
+> street-breakfast-shop@0.1.1 build:tt
 > node scripts/build-tt.mjs
 
 {
@@ -8,7 +8,7 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
   "info": {
     "appid": "ttebf69d4b758f209102",
     "projectname": "街角早餐铺",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "inputs": [
       "game.js",
       "src/canvas-art.js",
@@ -17,13 +17,13 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
       "adapters/douyin-sidebar.js"
     ],
     "sourceFiles": {
-      "game.js": "834b2d9171e50dec7139c20e40932fb210aff45d4a1cca9dbac01faf079cb088",
+      "game.js": "928386acae25685fb24ae67400ab48d0a5e449d7da4c15859fcb8c02f718c937",
       "src/canvas-art.js": "c406cc27b6d702a155a1219333b7111037dc6ee9557d03ebed32913ef05aab08",
-      "src/main.js": "9a2f45ccc7ccc2b38fd55845b45f90a26d9192f9bd37008fbce26360ee0247b2",
+      "src/main.js": "4a791475c76eb0603f80a73eaebce337a515f244478675e732baccfdac68512a",
       "adapters/tt.js": "38af4fa095500ec9e54595b6c172eb46e9c1741c5a9e9326517c554ac59d6b4a",
       "adapters/douyin-sidebar.js": "09812d4f85060387616f1b135c7311a09a38f27b34b4376a4dd05c16c504b598",
-      "config/douyin.json": "5096e7217783a75ed85c60f6051103c5010eaef060e524a4b8aa4537e6e3a052",
-      "scripts/build-tt.mjs": "0432cf0251a61cfd2536aa3d9c261ea40b7228bf7107a38cbabb55101681f488"
+      "config/douyin.json": "a886c740d0faa3d5e54da92610d9d3a96bd237f1cd8c33dab1e103d73c773d22",
+      "scripts/build-tt.mjs": "295e475338c9ab223480b6bee2e856bde4450bc10277c12fabcc65e7ca463b98"
     },
     "entry": "game.js",
     "browserAssetsIncluded": false,
@@ -31,7 +31,7 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
     "realPhoneValidated": false,
     "uploaded": false,
     "files": {
-      "game.js": "01a567cec438bedba0aabe6345645ea8f1f04d3de088be349ad9748927fc8d83",
+      "game.js": "eeb821a2b63e73f8920212875fa44d9e2e00a1ebcf0226cf514c62a5980551c3",
       "game.json": "adfce90c444cdbf96dc51598471759bca31feb5e936833b36847f3570fd4bca0",
       "project.config.json": "0444f0cad07e96fbefbd9ff02278b1163b61ab2900c3a042cad5dc3f14d8fa06",
       "assets/tap.wav": "5d91b8d5d7e016ed4c42054e607ec700b6e6ef16721b6adc03c14368bc68ce93",
