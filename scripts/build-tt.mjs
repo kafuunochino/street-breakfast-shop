@@ -16,7 +16,7 @@ export async function buildDouyin(options = {}) {
     let source = await readFile(new URL(path, root), 'utf8');
     const expectedImports = path === 'src/main.js' ? [
       "import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars } from '../game.js';",
-      "import { C, roundRect, circle, ellipse, line, label, wrapped, ingredientArt, foodArt, avatar, streetArt } from './canvas-art.js';"
+      "import { C, roundRect, circle, ellipse, line, poly, label, wrapped, ingredientArt, foodArt, avatar, streetArt } from './canvas-art.js';"
     ] : [];
     const imports = source.match(/^import[^\n]*$/gm) || [];
     if (JSON.stringify(imports) !== JSON.stringify(expectedImports)) throw new Error(`Unreviewed import graph in ${path}`);

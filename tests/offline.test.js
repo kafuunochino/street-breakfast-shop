@@ -20,7 +20,7 @@ test('fixed offline HTML reproduces user extra-cooked path and recovers through 
 });
 
 test('fixed offline artifact handles an extra-ingredient mistake before all 19 orders and still completes all five chapters',async()=>{
- const {html}=await buildOffline();const h=bootOfflineHtml(html);open(h);
+ const {html}=await buildOffline();const h=bootOfflineHtml(html,{width:320,height:568,safeInsets:{top:92,bottom:34},clientOffset:{left:17,top:23}});open(h);
  for(let stage=0;stage<STAGES.length;stage++){
   for(const order of STAGES[stage].orders){
    const required=requiredIngredients(order),extra=Object.keys(INGREDIENTS).find(id=>!required.includes(id));

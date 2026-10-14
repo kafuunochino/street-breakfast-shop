@@ -1,13 +1,13 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "file": "breakfast-demo.html",
-  "sha256": "2c2452f544cabd818acaac76ead161c984934a49aad27d61f84994f321ba3616",
-  "bytes": 88563,
+  "sha256": "807365cab87ff2a78eb623ab7f5b22b80859ee90d7ffae6c3b2d5382c863bf0b",
+  "bytes": 92276,
   "sources": {
     "game.js": "928386acae25685fb24ae67400ab48d0a5e449d7da4c15859fcb8c02f718c937",
-    "src/canvas-art.js": "c406cc27b6d702a155a1219333b7111037dc6ee9557d03ebed32913ef05aab08",
-    "src/main.js": "4a791475c76eb0603f80a73eaebce337a515f244478675e732baccfdac68512a",
-    "adapters/browser.js": "08429df58363f5118b37d60adceff6210e036455f7f0157a5ea7e0add5b73b8e"
+    "src/canvas-art.js": "6539c38ff4049cd59e6db2b3fd09895bc17ddaeb2879653f25b9ae92cd454778",
+    "src/main.js": "a809d6879fecafe3e70776aa3e03355eb093086fd439586cfc5705c32a72a7a0",
+    "adapters/browser.js": "05d64859b72df5ef078cc7ad9f26b84fd46e2b5adec756993945169dcd79c051"
   },
   "actualBrowserQa": false,
   "realDeviceQa": false

@@ -10,7 +10,7 @@ async function command(method,params={}){return new Promise((resolve,reject)=>{c
 async function value(expression){const res=await command('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(res.exceptionDetails)throw Error(JSON.stringify(res.exceptionDetails));return res.result.value;}
 async function waitFor(expr,ms=5000){const start=Date.now();while(Date.now()-start<ms){if(await value(expr))return;await sleep(40);}throw Error('Timed out: '+expr);}
 async function inspect(){return value('window.breakfastGame.inspect()');}
-async function click(buttonId){const snap=await inspect();const b=snap.buttons.find(x=>x.id===buttonId);assert.ok(b&&!b.disabled,`button active: ${buttonId}`);const {zoom,ox,oy}=snap.viewport;const x=ox+(Number(b.x)+b.w/2)*zoom,y=oy+(b.y+b.h/2)*zoom;await command('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button:'left',clickCount:1});await command('Input.dispatchMouseEvent',{type:'mouseReleased',x,y,button:'left',clickCount:1});}
+async function click(buttonId){let snap=await inspect();if(!snap.buttons.some(x=>x.id===buttonId)){const tab=buttonId.startsWith('ingredient-')||buttonId==='recipes'?'tab-prep':buttonId.startsWith('texture-')||buttonId==='cook'?'tab-cook':buttonId.startsWith('package-')||buttonId==='serve'?'tab-serve':null;if(tab&&snap.screen==='play')await click(tab);else if(['chapters','restart','sidebar-open'].includes(buttonId)&&snap.screen==='play')await click('menu');snap=await inspect();}const b=snap.buttons.find(x=>x.id===buttonId);assert.ok(b&&!b.disabled,`button active: ${buttonId}`);const {zoom,ox,oy}=snap.viewport;const x=ox+(Number(b.x)+b.w/2)*zoom,y=oy+(b.y+b.h/2)*zoom;await command('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button:'left',clickCount:1});await command('Input.dispatchMouseEvent',{type:'mouseReleased',x,y,button:'left',clickCount:1});}
 async function screenshot(name){const shot=await command('Page.captureScreenshot',{format:'png'});await writeFile(new URL(`../artifacts/${name}.png`,import.meta.url),Buffer.from(shot.data,'base64'));}
 try{
  let pages;for(let i=0;i<100;i++){try{pages=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();if(pages.some(p=>p.type==='page'))break;}catch{}await sleep(100);}
@@ -19,7 +19,7 @@ try{
  await command('Runtime.enable');await command('Page.enable');await command('Log.enable');await command('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await command('Page.navigate',{url:base});await waitFor('!!window.breakfastGame');
  await mkdir(new URL('../artifacts/',import.meta.url),{recursive:true});await screenshot('canvas-welcome-mobile');
  await click('start');await click('open-day');assert.equal((await inspect()).screen,'play');
- await click('help');await click('close-help');await click('recipes');await click('close-recipes');await click('chapters');await click('close-chapters');
+ await click('help');await click('close-help');await click('recipes');await click('close-recipes');await click('chapters');await click('close-chapters');await click('close-menu');
  await click('sound');assert.equal((await inspect()).progress.sound,false);
  // Wrong empty serving explains the problem without consuming the order.
  await click('serve');let snap=await inspect();assert.equal(snap.state.orderIndex,0);assert.equal(snap.state.mistakes,1);assert.equal(snap.state.phase,'playing');

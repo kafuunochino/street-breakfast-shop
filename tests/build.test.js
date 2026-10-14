@@ -58,8 +58,8 @@ test('exact assembled candidate Canvas CTA reaches real guarded tt.navigateToSce
   vm.runInNewContext(bundle,{tt:api,requestAnimationFrame:()=>++frame,cancelAnimationFrame:()=>{}},{timeout:2000});
   assert.ok(creationOrder.indexOf('onShow')<creationOrder.indexOf('canvas'));
   function click(text){const point=[...labels].reverse().find(label=>label.text===text);assert.ok(point,`visible Canvas CTA: ${text}`);const event={changedTouches:[{clientX:point.x,clientY:point.y,identifier:1}]};touch.down(event);touch.up(event);}
-  click('从侧边栏再来 ›');assert.equal(navigationCalls,0);click('前往抖音侧边栏');assert.equal(navigationCalls,1);assert.equal(navRequest.scene,'sidebar');
-  assert.ok(labels.some(label=>label.text==='正在打开…'));
+  click('从侧边栏再来');assert.equal(navigationCalls,0);click('前往抖音侧边栏');assert.equal(navigationCalls,1);assert.equal(navRequest.scene,'sidebar');
+  assert.ok(labels.some(label=>label.text==='正在打开'));
   navRequest.success({});await Promise.resolve();assert.ok(!labels.some(label=>String(label.text).includes('本次确实')));
   shows.forEach(fn=>fn({launch_from:'homepage',location:'sidebar_card'}));assert.ok(labels.some(label=>String(label.text).includes('本次确实从侧边栏')));
   shows.forEach(fn=>fn({launch_from:'homepage',location:'ordinary'}));assert.ok(!labels.some(label=>String(label.text).includes('本次确实从侧边栏')));

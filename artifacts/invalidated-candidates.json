@@ -10,9 +10,19 @@
       "offlineHtmlSha256": "b8b412757fc2e06e1a1bc756bdbd2b3833e2393229f9888681127a01ab3fe86b",
       "uploadAllowed": false,
       "uploadStatus": "Breakfast candidate was not uploaded, as confirmed by the parent task."
+    },
+    {
+      "version": "0.1.1",
+      "sourceCommit": "4a6f4fc142b99a8d81e694f683f7333473b999f4",
+      "manifestSha256": "587cba70450c8b3552c689dfa96b3d7de3de01c6e05c6c205351aa11ca07b12d",
+      "gameJsSha256": "eeb821a2b63e73f8920212875fa44d9e2e00a1ebcf0226cf514c62a5980551c3",
+      "offlineHtmlSha256": "2c2452f544cabd818acaac76ead161c984934a49aad27d61f84994f321ba3616",
+      "uploadAllowed": false,
+      "reason": "Superseded by the user-requested mobile-first in-Canvas street-stall UI. The 0.1.1 recipe recovery fix is preserved unchanged.",
+      "uploadStatus": "No upload is performed by this source task."
     }
   ],
-  "replacementVersion": "0.1.1",
+  "replacementVersion": "0.2.0",
   "replacementManifest": "artifacts/douyin-candidate-manifest.json",
   "rule": "Do not upload or redeliver an invalidated candidate; verify the replacement source commit and exact file hashes first."
 }

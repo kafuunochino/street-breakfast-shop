@@ -1,5 +1,5 @@
 /** Original procedural Canvas2D artwork. No downloaded assets or DOM. */
-export const C = { bg: '#eee8d9', paper: '#fffcf0', ink: '#434a3a', muted: '#8e927b', green: '#70866a', pale: '#e5ebd8', coral: '#bc674e', gold: '#d7ac65', line: '#dedac6' };
+export const C = { bg: '#f0d8ad', paper: '#fff5dc', ink: '#513b2b', muted: '#8d755d', green: '#3d684f', pale: '#e8dfbb', coral: '#ad5032', gold: '#d7ac65', line: '#dedac6' };
 export function roundRect(ctx, x, y, w, h, r, fill, stroke) {
   r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill){ctx.fillStyle=fill;ctx.fill();} if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}
 }
@@ -7,8 +7,8 @@ export function circle(ctx, x, y, radius, color) { ctx.fillStyle=color;ctx.begin
 export function ellipse(ctx, x, y, rx, ry, color) { ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);circle(ctx,0,0,1,color);ctx.restore(); }
 export function line(ctx, x, y, ex, ey, color, width=1) {ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex,ey);ctx.stroke();}
 export function poly(ctx, points, color) { ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=color;ctx.fill(); }
-export function label(ctx, str, x, y, size=12, color=C.ink, weight='normal', align='left') { ctx.fillStyle=color;ctx.font=`${weight} ${size}px sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(str,x,y); }
-export function wrapped(ctx, str, x, y, maxWidth, size=12, color=C.ink, height=20, maxLines=4) {ctx.font=`${size}px sans-serif`; const lines=[];let row='';for(const char of str){if(char==='\n'){lines.push(row);row='';continue;}if(ctx.measureText(row+char).width>maxWidth&&row){lines.push(row);row=char;}else row+=char;}if(row)lines.push(row);lines.slice(0,maxLines).forEach((s,i)=>label(ctx,s,x,y+i*height,size,color));return Math.min(lines.length,maxLines)*height;}
+export function label(ctx, str, x, y, size=12, color=C.ink, weight='normal', align='left') { ctx.fillStyle=color;ctx.font=`${weight==='bold'?700:weight==='normal'?400:weight} ${size}px "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(str,x,y); }
+export function wrapped(ctx, str, x, y, maxWidth, size=12, color=C.ink, height=20, maxLines=4) {ctx.font=`400 ${size}px "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif`; const lines=[];let row='';for(const char of str){if(char==='\n'){lines.push(row);row='';continue;}if(ctx.measureText(row+char).width>maxWidth&&row){lines.push(row);row=char;}else row+=char;}if(row)lines.push(row);lines.slice(0,maxLines).forEach((s,i)=>label(ctx,s,x,y+i*height,size,color));return Math.min(lines.length,maxLines)*height;}
 export function ingredientArt(ctx, id, x, y, s=1) {ctx.save();ctx.translate(x,y);ctx.scale(s,s);
  if(id==='batter'){ellipse(ctx,0,12,22,7,'#dbc99f');poly(ctx,[[-22,-3],[22,-3],[16,17],[-16,17]],'#8ba38c');ellipse(ctx,0,-3,22,8,'#f0d799');line(ctx,10,-5,24,-23,'#987652',4);}
  if(id==='egg'){ellipse(ctx,0,4,23,16,'#fdf4d8');circle(ctx,1,3,11,'#e8ac49');circle(ctx,-2,0,3,'#f4ca71');}
