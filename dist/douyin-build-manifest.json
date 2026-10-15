@@ -1,7 +1,7 @@
 {
   "appid": "ttebf69d4b758f209102",
   "projectname": "街角早餐铺",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "inputs": [
     "game.js",
     "src/canvas-art.js",
@@ -11,14 +11,14 @@
     "adapters/rewarded.js"
   ],
   "sourceFiles": {
-    "game.js": "327eb3199565f95c267eb9963fff9547fa0de12c5a988097b5b64cac75bf6675",
+    "game.js": "c3660c1c49fdb56110e0633b98f29c046bb14637efd05728ea8e004d0e5202ec",
     "src/canvas-art.js": "e497a62f2f48b774f8ff3c2ed685a18aab9a28c4e7424efc2b8fc6292dc66f7e",
-    "src/main.js": "04f695edf1808580e0a8ec4f60187636cc4142fd5a3f1ebe9d1dc290df6e7e33",
-    "adapters/tt.js": "6ea96d0fdac69232e8de5c686ece860d0d9cc0529129ba2484db3e8eb875e1a1",
+    "src/main.js": "65e7839f9e431e91fda13ced952bec7eaa9a225b06ed8a556d7f5bea1249f6d0",
+    "adapters/tt.js": "351a45ec630dffd0e9e6f5b1db39068a24da93c571a9ca46d0961627a57cbbb2",
     "adapters/douyin-sidebar.js": "09812d4f85060387616f1b135c7311a09a38f27b34b4376a4dd05c16c504b598",
     "adapters/rewarded.js": "e83bf601d941b7603b5bccbe29354e7a1c894105f1ec3794995d6da372d9acc7",
-    "config/douyin.json": "246c700f3b987f052c691514d70c2c832ce6450d86c6ff38a2a6bd659b2e17fc",
-    "scripts/build-tt.mjs": "aacbfab22a8846722649364af6901266af7083d7efbdf75f28cf8d1ca1f9779f"
+    "config/douyin.json": "87ba4e93bb68b8b208b54a13b1a225dc903529f7d7aa660643e69ce404ee1e09",
+    "scripts/build-tt.mjs": "455e54423c4ad79ae463dbc15acd4ebeab4f18ea1ef9024559eed2c11a87692d"
   },
   "entry": "game.js",
   "browserAssetsIncluded": false,
@@ -26,7 +26,7 @@
   "realPhoneValidated": false,
   "uploaded": false,
   "files": {
-    "game.js": "7d54b90602b775138a057c7de15d53dd719410c74d817133990f061e06d73a45",
+    "game.js": "0126ed17f2f45bac24201bc35a503686b6a204aa58a25e3102fd606fcd8a639e",
     "game.json": "adfce90c444cdbf96dc51598471759bca31feb5e936833b36847f3570fd4bca0",
     "project.config.json": "0444f0cad07e96fbefbd9ff02278b1163b61ab2900c3a042cad5dc3f14d8fa06",
     "assets/tap.wav": "5d91b8d5d7e016ed4c42054e607ec700b6e6ef16721b6adc03c14368bc68ce93",

@@ -126,7 +126,7 @@
     title: '早高峰不慌',
     time: '07:10',
     weather: '微风 · 20°',
-    note: '街角热闹起来。没有倒计时催你，认真听清每一份心愿。',
+    note: '街角热闹起来。耐心倒计时开始了，教学班留足时间，认真听清每一份心愿。',
     ending: '阿早拍了拍保温箱：“以后这条街的早餐推荐，就写你家了。”',
     target: 360,
     orders: [order('zao', 'rice', true, 'crisp', 'bag', '赶时间！饭团加葱、煎脆一点，打包。'), order('man', 'pancake', false, 'crisp', 'bag', '煎饼不要葱，要脆的。我得带去学校！'), order('zhou', 'cheese', true, 'soft', 'plate', '今天换芝士蛋饼，加点葱，普通火候。'), order('qiao', 'rice', false, 'soft', 'bag', '饭团不要葱，普通火候，帮我带走。')]
@@ -192,7 +192,7 @@
       title: `${SHIFT_THEMES[chapter]} · ${index % 10 + 1}`,
       time: `${String(6 + Math.floor(index / 15)).padStart(2, '0')}:${String(index * 7 % 60).padStart(2, '0')}`,
       weather: index % 4 === 3 ? '细雨' : '晴暖',
-      note: index < 10 ? '街坊会一起到店，可点头像切换订单。这几班没有失败压力。' : index < 20 ? '每开一锅，排队耐心减少一格。先照顾急客，放错食材可随时重做。' : index < 30 ? '同一火候连锅只花1格炉火，换火候花2格。省火还是先做急单，由你选择。' : '连号同桌单要一起上：先做一份放保温位，再做另一份。保温最多等2锅，别让早餐凉了。',
+      note: index < 10 ? '街坊会一起到店，可点头像切换订单。顾客会实时等候，先看秒数再动手。' : index < 20 ? '秒数耗尽会失去顾客，开锅次数也要安排。先照顾急客，放错食材可随时重做。' : index < 30 ? '同一火候连锅只花1格炉火，换火候花2格。省火还是先做急单，由你选择。' : '连号同桌单要一起上：先做一份放保温位，再做另一份。保温最多等2锅，别让早餐凉了。',
       ending: index < 20 ? '摊前多了熟悉的笑声，忙碌也渐渐有了节奏。' : index < 40 ? '一口锅照顾好一桌人，细心比手快更重要。' : '高峰散去，街坊把空盘叠好。今天又是热气腾腾的一天。',
       target: n * 90,
       orders,
@@ -228,9 +228,29 @@
       };
     }).filter(o => !state.servedIds.includes(o.id)).slice(0, STAGES[state.stage].queueSize);
   }
+  function patienceBudgetMs(stage) {
+    return (stage < 5 ? 70 - stage * 5 : stage < 10 ? 48 : Math.max(24, 38 - Math.floor((stage - 10) / 3))) * 1000;
+  }
+  function patienceSeconds(state, order) {
+    var _chainObject2, _nullish2, _nullish3;
+    const deadline = (_chainObject2 = state.timeDeadlines, _chainObject2 === null || _chainObject2 === void 0 ? void 0 : _chainObject2[_nullish2 = order.index, _nullish2 === null || _nullish2 === void 0 ? state.orderIndex : _nullish2]);
+    return Math.max(0, Math.ceil(((_nullish3 = deadline, _nullish3 === null || _nullish3 === void 0 ? (state.elapsedMs || 0) + patienceBudgetMs(state.stage) : _nullish3) - (state.elapsedMs || 0)) / 1000));
+  }
+  function registerTimers(state) {
+    const timeDeadlines = {
+      ...state.timeDeadlines
+    };
+    visibleOrders(state).forEach((o, rank) => {
+      if (timeDeadlines[o.index] === undefined) timeDeadlines[o.index] = (state.elapsedMs || 0) + patienceBudgetMs(state.stage) * (rank + 1 + (o.pair != null ? 1 : 0));
+    });
+    return {
+      ...state,
+      timeDeadlines
+    };
+  }
   function patienceLeft(state, order) {
-    var _chainObject2, _chainObject3;
-    return (_chainObject2 = order, _chainObject2 === null || _chainObject2 === void 0 ? void 0 : _chainObject2.due) === null || (_chainObject3 = order, _chainObject3 === null || _chainObject3 === void 0 ? void 0 : _chainObject3.due) === undefined ? null : Math.max(0, order.due + state.deadlineBonus - state.turn);
+    var _chainObject3, _chainObject4;
+    return (_chainObject3 = order, _chainObject3 === null || _chainObject3 === void 0 ? void 0 : _chainObject3.due) === null || (_chainObject4 = order, _chainObject4 === null || _chainObject4 === void 0 ? void 0 : _chainObject4.due) === undefined ? null : Math.max(0, order.due + state.deadlineBonus - state.turn);
   }
   function fireCost(state, texture = state.dish.texture) {
     return STAGES[state.stage].efficient && state.lastHeat === texture ? 1 : 2;
@@ -240,8 +260,10 @@
   }
   function initialState(stage = 0, runId = 1) {
     const s = tutorialState(stage);
-    return {
+    return registerTimers({
       ...s,
+      elapsedMs: 0,
+      timeDeadlines: {},
       runId: Number.isSafeInteger(runId) && runId > 0 ? runId : 1,
       turn: 0,
       fuel: STAGES[s.stage].fuel,
@@ -258,11 +280,11 @@
       arrivals: Object.fromEntries(Array.from({
         length: STAGES[s.stage].queueSize
       }, (_, i) => [i, 0]))
-    };
+    });
   }
   function getOrder(state) {
-    var _chainObject4, _chainObject5;
-    const raw = (_chainObject4 = STAGES[state.stage], _chainObject4 === null || _chainObject4 === void 0 ? void 0 : (_chainObject5 = _chainObject4.orders, _chainObject5[state.orderIndex]));
+    var _chainObject5, _chainObject6;
+    const raw = (_chainObject5 = STAGES[state.stage], _chainObject5 === null || _chainObject5 === void 0 ? void 0 : (_chainObject6 = _chainObject5.orders, _chainObject6[state.orderIndex]));
     return raw ? {
       ...raw,
       id: `${state.stage}:${state.orderIndex}`
@@ -470,10 +492,10 @@
       ...state.arrivals
     };
     for (const o of visibleOrders(state)) if (arrivals[o.index] === undefined) arrivals[o.index] = state.turn;
-    return {
+    return registerTimers({
       ...state,
       arrivals
-    };
+    });
   }
   function failed(state, code, message) {
     return {
@@ -491,6 +513,16 @@
   function reduce(state, action) {
     if (!state || !action || typeof action.type !== 'string') return state;
     const stage = STAGES[state.stage];
+    if (action.type === 'TICK') {
+      if (!['playing', 'served'].includes(state.phase) || !Number.isFinite(action.ms) || action.ms <= 0) return state;
+      let next = registerTimers(state);
+      next = {
+        ...next,
+        elapsedMs: next.elapsedMs + Math.floor(action.ms)
+      };
+      const expired = visibleOrders(next).find(o => next.timeDeadlines[o.index] <= next.elapsedMs);
+      return expired ? failed(next, 'timeout', `${CUSTOMERS[expired.customer].name}等候超时了。先照顾红色倒计时的顾客；可免费重开。`) : next;
+    }
     if (action.type === 'RESTART_STAGE') {
       const next = initialState(state.stage, state.runId + 1);
       next.dish.token = state.dish.token + 1;
@@ -520,12 +552,13 @@
         revives: 1,
         fuel: state.fuel === null ? null : state.fuel + 4,
         deadlineBonus: state.deadlineBonus + 2,
+        timeDeadlines: Object.fromEntries(Object.entries(state.timeDeadlines).map(([id, t]) => [id, Math.max(t, state.elapsedMs) + 25000])),
         dish,
         heldDish: state.heldDish ? {
           ...state.heldDish,
           cookedAt: state.turn
         } : null,
-        feedback: '街坊帮忙续摊：炉火 +4，耐心 +2 锅，熟食重新保温。本班仅一次。',
+        feedback: '街坊帮忙续摊：炉火 +4，耐心 +25 秒及2锅，熟食重新保温。本班仅一次。',
         feedbackType: 'success'
       };
     }
@@ -535,11 +568,12 @@
         ...state,
         fuel: action.kind === 'fuel' && state.fuel !== null ? state.fuel + 3 : state.fuel,
         deadlineBonus: state.deadlineBonus + (action.kind === 'tea' ? 2 : 0),
+        timeDeadlines: action.kind === 'tea' ? Object.fromEntries(Object.entries(state.timeDeadlines).map(([id, t]) => [id, t + 20000])) : state.timeDeadlines,
         toolsUsed: {
           ...state.toolsUsed,
           [action.kind]: 1
         },
-        feedback: action.kind === 'fuel' ? '小炭包：炉火 +3，本班已用。' : '街坊茶：所有待客耐心 +2 锅，本班已用。',
+        feedback: action.kind === 'fuel' ? '小炭包：炉火 +3，本班已用。' : '街坊茶：所有待客耐心 +20 秒及2锅，本班已用。',
         feedbackType: 'success'
       };
     }
@@ -649,7 +683,8 @@
         });
       }
     }
-    const next = reduceClassic(state, action);
+    let next = reduceClassic(state, action);
+    if (action.type === 'NEXT_ORDER' && next !== state) next = registerTimers(next);
     if (action.type === 'SERVE' && next.phase === 'served' && next !== state) return registerArrivals(next);
     if (action.type === 'CLEAR' && state.stage >= 10 && next !== state && state.phase === 'playing') return {
       ...next,
@@ -687,19 +722,19 @@
       }
     });
     try {
-      var _chainObject7, _chainObject8, _chainObject9, _chainObject0;
+      var _chainObject8, _chainObject9, _chainObject0, _chainObject1;
       const p = JSON.parse(raw);
       if (!p || ![1, VERSION].includes(p.version)) return fallback();
       const clean = (a, max) => Array.from({
         length: 50
       }, (_, i) => {
-        var _chainObject6;
-        return i < (p.version === 1 ? 5 : 50) && Number.isInteger((_chainObject6 = a, _chainObject6 === null || _chainObject6 === void 0 ? void 0 : _chainObject6[i])) && a[i] >= 0 && a[i] <= max ? a[i] : 0;
+        var _chainObject7;
+        return i < (p.version === 1 ? 5 : 50) && Number.isInteger((_chainObject7 = a, _chainObject7 === null || _chainObject7 === void 0 ? void 0 : _chainObject7[i])) && a[i] >= 0 && a[i] <= max ? a[i] : 0;
       });
       const number = (v, max, base = 0) => Number.isSafeInteger(v) && v >= base && v <= max ? v : base;
       const old = p.version === 1;
       const receipt = p.pendingSpend;
-      const pendingSpend = !old && receipt && Number.isSafeInteger(receipt.runId) && receipt.runId > number(p.lastRewardedRun, 1e12) && receipt.runId < number(p.nextRun, 1e12, 1) && [0, 30].includes(receipt.coins) && [0, 1].includes((_chainObject7 = receipt.tools, _chainObject7 === null || _chainObject7 === void 0 ? void 0 : _chainObject7.fuel)) && [0, 1].includes((_chainObject8 = receipt.tools, _chainObject8 === null || _chainObject8 === void 0 ? void 0 : _chainObject8.tea)) ? {
+      const pendingSpend = !old && receipt && Number.isSafeInteger(receipt.runId) && receipt.runId > number(p.lastRewardedRun, 1e12) && receipt.runId < number(p.nextRun, 1e12, 1) && [0, 30].includes(receipt.coins) && [0, 1].includes((_chainObject8 = receipt.tools, _chainObject8 === null || _chainObject8 === void 0 ? void 0 : _chainObject8.fuel)) && [0, 1].includes((_chainObject9 = receipt.tools, _chainObject9 === null || _chainObject9 === void 0 ? void 0 : _chainObject9.tea)) ? {
         runId: receipt.runId,
         coins: receipt.coins,
         tools: {
@@ -715,8 +750,8 @@
         sound: typeof p.sound === 'boolean' ? p.sound : true,
         coins: old ? 0 : number(p.coins, 99999),
         tools: {
-          fuel: old ? 0 : number((_chainObject9 = p.tools, _chainObject9 === null || _chainObject9 === void 0 ? void 0 : _chainObject9.fuel), 3),
-          tea: old ? 0 : number((_chainObject0 = p.tools, _chainObject0 === null || _chainObject0 === void 0 ? void 0 : _chainObject0.tea), 3)
+          fuel: old ? 0 : number((_chainObject0 = p.tools, _chainObject0 === null || _chainObject0 === void 0 ? void 0 : _chainObject0.fuel), 3),
+          tea: old ? 0 : number((_chainObject1 = p.tools, _chainObject1 === null || _chainObject1 === void 0 ? void 0 : _chainObject1.tea), 3)
         },
         nextRun: old ? 1 : number(p.nextRun, 1e12, 1),
         lastRewardedRun: old ? 0 : number(p.lastRewardedRun, 1e12),
@@ -748,8 +783,8 @@
     };
   }
   function withSpendReceipt(progress, state, kind) {
-    var _chainObject1;
-    const old = (_chainObject1 = progress.pendingSpend, _chainObject1 === null || _chainObject1 === void 0 ? void 0 : _chainObject1.runId) === state.runId ? progress.pendingSpend : {
+    var _chainObject10;
+    const old = (_chainObject10 = progress.pendingSpend, _chainObject10 === null || _chainObject10 === void 0 ? void 0 : _chainObject10.runId) === state.runId ? progress.pendingSpend : {
       runId: state.runId,
       coins: 0,
       tools: {
@@ -785,11 +820,11 @@
     };
   }
   function recordStage(progress, state) {
-    var _chainObject10;
+    var _chainObject11;
     if (state.phase !== 'stageComplete') return progress;
     const clean = parseProgress(JSON.stringify(progress)),
       first = clean.stars[state.stage] === 0;
-    if ((_chainObject10 = clean.pendingSpend, _chainObject10 === null || _chainObject10 === void 0 ? void 0 : _chainObject10.runId) === state.runId) clean.pendingSpend = null;
+    if ((_chainObject11 = clean.pendingSpend, _chainObject11 === null || _chainObject11 === void 0 ? void 0 : _chainObject11.runId) === state.runId) clean.pendingSpend = null;
     clean.unlocked = Math.max(clean.unlocked, Math.min(49, state.stage + 1));
     clean.stars[state.stage] = Math.max(clean.stars[state.stage], stageStars(state));
     clean.best[state.stage] = Math.max(clean.best[state.stage], state.score);
@@ -814,8 +849,8 @@
     };
   }
   function spendTool(progress, state, kind) {
-    var _chainObject11;
-    if (!['fuel', 'tea'].includes(kind) || !(_chainObject11 = progress.tools, _chainObject11 === null || _chainObject11 === void 0 ? void 0 : _chainObject11[kind])) return {
+    var _chainObject12;
+    if (!['fuel', 'tea'].includes(kind) || !(_chainObject12 = progress.tools, _chainObject12 === null || _chainObject12 === void 0 ? void 0 : _chainObject12[kind])) return {
       progress,
       state
     };
@@ -1188,7 +1223,7 @@
   const STATIONS = [['prep', '备料台'], ['cook', '铁锅台'], ['serve', '出餐台']];
   /** Full-screen game world. No gameplay DOM; width-based layout preserves physical touch targets. */
   function startGame(platform) {
-    var _chainObject12, _chainFunction;
+    var _chainObject13, _chainFunction;
     const ctx = platform.canvas.getContext('2d');
     let progress = parseProgress(null),
       storageWarning = false;
@@ -1223,7 +1258,7 @@
       cookElapsed = 0,
       activeToken = -1,
       pointerDown = null;
-    let sidebarState = (_chainObject12 = platform.sidebar, _chainObject12 === null || _chainObject12 === void 0 ? void 0 : (_chainFunction = _chainObject12.getState, _chainFunction.call(_chainObject12))) || {
+    let sidebarState = (_chainObject13 = platform.sidebar, _chainObject13 === null || _chainObject13 === void 0 ? void 0 : (_chainFunction = _chainObject13.getState, _chainFunction.call(_chainObject13))) || {
         available: false,
         checked: true,
         enteredFromSidebar: false,
@@ -1283,8 +1318,8 @@
       pointerDown = null;
     }
     function beginStage(index) {
-      var _chainObject13, _chainFunction2;
-      _chainObject13 = platform.rewards, _chainObject13 === null || _chainObject13 === void 0 ? void 0 : (_chainFunction2 = _chainObject13.cancel, _chainFunction2.call(_chainObject13));
+      var _chainObject14, _chainFunction2;
+      _chainObject14 = platform.rewards, _chainObject14 === null || _chainObject14 === void 0 ? void 0 : (_chainFunction2 = _chainObject14.cancel, _chainFunction2.call(_chainObject14));
       rewardPending = null;
       const next = allocateRun(progress, index);
       progress = next.progress;
@@ -1318,8 +1353,8 @@
       }
     }
     function requestRevive() {
-      var _chainObject14, _chainFunction3, _chainObject15;
-      if (rewardPending || state.phase !== 'failed' || state.revives >= 1 || !(_chainObject14 = platform.rewards, _chainObject14 === null || _chainObject14 === void 0 ? void 0 : (_chainFunction3 = _chainObject14.getState, _chainObject15 = _chainFunction3.call(_chainObject14), _chainObject15.available))) return;
+      var _chainObject15, _chainFunction3, _chainObject16;
+      if (rewardPending || state.phase !== 'failed' || state.revives >= 1 || !(_chainObject15 = platform.rewards, _chainObject15 === null || _chainObject15 === void 0 ? void 0 : (_chainFunction3 = _chainObject15.getState, _chainObject16 = _chainFunction3.call(_chainObject15), _chainObject16.available))) return;
       const token = {
         runId: state.runId,
         failureId: state.failureId
@@ -1367,7 +1402,7 @@
       save();
     }
     function button(id, text, x, y, w, h, fn, opts = {}) {
-      var _nullish2, _nullish3;
+      var _nullish4, _nullish5;
       const {
         fill = C.paper,
         color = C.ink,
@@ -1378,8 +1413,8 @@
       } = opts;
       ctx.save();
       if (disabled && opts.dimDisabled !== false) ctx.globalAlpha = .46;
-      roundRect(ctx, x, y + 3, w, h, (_nullish2 = opts.radius, _nullish2 === null || _nullish2 === void 0 ? 7 : _nullish2), '#70432433');
-      roundRect(ctx, x, y, w, h, (_nullish3 = opts.radius, _nullish3 === null || _nullish3 === void 0 ? 7 : _nullish3), selected ? '#355f4d' : fill, selected ? '#264a3b' : stroke);
+      roundRect(ctx, x, y + 3, w, h, (_nullish4 = opts.radius, _nullish4 === null || _nullish4 === void 0 ? 7 : _nullish4), '#70432433');
+      roundRect(ctx, x, y, w, h, (_nullish5 = opts.radius, _nullish5 === null || _nullish5 === void 0 ? 7 : _nullish5), selected ? '#355f4d' : fill, selected ? '#264a3b' : stroke);
       if (text) label(ctx, text, x + w / 2, y + h / 2, fontSize, selected ? '#fff4d5' : color, opts.bold ? '700' : '400', 'center');
       ctx.restore();
       buttons.push({
@@ -1459,27 +1494,30 @@
         const x = 12 + i * 114,
           y = 58,
           left = patienceLeft(state, o),
+          seconds = patienceSeconds(state, o),
+          urgent = seconds <= 10,
           chosen = o.index === state.orderIndex;
         button(`order-${o.index}`, '', x, y, 108, layout.queueH - 4, () => dispatch({
           type: 'SELECT_ORDER',
           index: o.index
         }), {
           fill: chosen ? '#f9e4ad' : '#e8d1a5',
-          stroke: left !== null && left <= 1 ? C.coral : chosen ? '#975335' : '#ab8862',
+          stroke: urgent ? C.coral : chosen ? '#975335' : '#ab8862',
           disabled: state.phase !== 'playing' || state.dish.status === 'cooking' || state.stage < 5,
           radius: 5,
           dimDisabled: false
         });
         const c = CUSTOMERS[o.customer],
           bounce = chosen && state.phase === 'served' ? Math.sin(artTime / 90) * 2 : 0;
-        avatar(ctx, o.customer, x + 23, y + 23 + bounce, c.color, 36, state.phase === 'served' && chosen ? 'happy' : left !== null && left <= 1 ? 'urgent' : 'calm', artTime);
+        avatar(ctx, o.customer, x + 23, y + 23 + bounce, c.color, 36, state.phase === 'served' && chosen ? 'happy' : urgent ? 'urgent' : 'calm', artTime);
         label(ctx, c.name, x + 47, y + 15, 12, C.ink, '700');
-        label(ctx, left === null ? '慢慢来' : `余 ${left} 锅`, x + 47, y + 35, 12, left !== null && left <= 1 ? C.coral : C.green, '700');
+        label(ctx, `余 ${seconds} 秒`, x + 47, y + 35, 12, urgent ? C.coral : C.green, '700');
+        if (left !== null) label(ctx, `开火余 ${left} 锅`, x + 54, y + 51, 9, left <= 1 ? C.coral : '#795b3b', '700', 'center');
         if (layout.queueH > 70) {
-          label(ctx, RECIPES[o.recipe].name, x + 54, y + 62, 11, '#755336', '400', 'center');
-          if (left !== null) {
+          label(ctx, RECIPES[o.recipe].name, x + 54, y + 65, 11, '#755336', '400', 'center');
+          {
             roundRect(ctx, x + 9, y + 75, 90, 4, 2, '#cdb486');
-            roundRect(ctx, x + 9, y + 75, 90 * Math.min(1, left / 5), 4, 2, left <= 1 ? C.coral : '#6d8f58');
+            roundRect(ctx, x + 9, y + 75, 90 * Math.min(1, seconds * 1000 / patienceBudgetMs(state.stage)), 4, 2, urgent ? C.coral : '#6d8f58');
           }
         }
       });
@@ -1616,7 +1654,7 @@
       }
       if (h >= 260) {
         roundRect(ctx, 19, y + 170, 322, h - 184, 5, '#efd1a0');
-        wrapped(ctx, '这口锅不催你。切换台面也会继续煎，打开摊位菜单则会暂停。', 32, y + 192, 294, 13, '#805d38', 23, 3);
+        wrapped(ctx, '顾客在等，注意红色倒计时。切换台面也会继续煎，打开摊位菜单则会暂停。', 32, y + 192, 294, 13, '#805d38', 23, 3);
       }
     }
     function serveView() {
@@ -1805,7 +1843,7 @@
         wood(0, 0, W, H, true);
         roundRect(ctx, 12, 12, 336, H - 24, 8, '#274b3c', '#c3975d');
         buttons = [];
-        label(ctx, '摊位小黑板', 29, 49, 25, '#f6e6bd', '700');
+        label(ctx, '摊位小黑板 · 已暂停', 29, 49, 25, '#f6e6bd', '700');
         button('close-menu', '返回', 280, 22, 56, 56, close, {
           fill: '#3f6650',
           color: C.paper,
@@ -1832,7 +1870,7 @@
         });
       } else if (screen === 'help') {
         paper('三个台面，一份心意', '老板手写的开摊贴士');
-        const tips = [['先看队伍', '点顾客切单；余锅是还能等几次开火，不是读秒。'], ['铁锅台', '选火候、开火。换台面不打断加热。'], ['出餐台', '选盘子或纸袋，确认口味后递给客人。'], ['高峰有章法', '11班起看余锅和炉火；31班起同桌单先保温再一起上。']];
+        const tips = [['先看队伍', '点顾客切单；看实时秒数，红色急客优先；到零本班失败。'], ['铁锅台', '选火候、开火。换台面不打断加热。'], ['出餐台', '选盘子或纸袋，确认口味后递给客人。'], ['高峰有章法', '菜单/配方本及切后台暂停计时；31班起同桌一起上。']];
         tips.forEach(([a, b], i) => {
           label(ctx, a, 29, 126 + i * 70, 16, C.coral, '700');
           wrapped(ctx, b, 29, 151 + i * 70, 300, 13, C.ink, 20, 2);
@@ -1881,7 +1919,7 @@
         paper('街坊工具箱', `金币 ${progress.coins} · 只在游戏内使用，没有现金购买`);
         for (const [i, kind] of ['fuel', 'tea'].entries()) {
           const y = 124 + i * 112;
-          label(ctx, kind === 'fuel' ? '小炭包：炉火 +3' : '街坊茶：耐心 +2 锅', 28, y, 16, C.ink, '700');
+          label(ctx, kind === 'fuel' ? '小炭包：炉火 +3' : '街坊茶：耐心 +20秒及2锅', 28, y, 16, C.ink, '700');
           label(ctx, `库存 ${progress.tools[kind]}/3 · 每班最多用1个 · 11班起可用`, 28, y + 24, 10, '#8c765a');
           button(`buy-${kind}`, `18金币买1个`, 24, y + 43, 150, 56, () => {
             const next = buyTool(progress, kind);
@@ -1899,13 +1937,13 @@
         wrapped(ctx, '未通关就刷新或重开，会退回本班所用工具和续摊金币；通关后正常消耗。', 28, 366, 302, 12, '#8c765a', 18, 2);
         backButton('close-tools');
       } else if (screen === 'failure') {
-        var _chainObject16, _chainObject17, _chainObject18, _chainObject19, _chainFunction4, _chainObject20, _chainObject21;
-        paper('这班先歇一歇', `第 ${state.stage + 1} 班 · ${(_chainObject16 = state.failure, _chainObject16 === null || _chainObject16 === void 0 ? void 0 : _chainObject16.code) === 'fuel' ? '炉火耗尽' : (_chainObject17 = state.failure, _chainObject17 === null || _chainObject17 === void 0 ? void 0 : _chainObject17.code) === 'cold' ? '早餐放凉了' : '排队安排失误'}`);
-        wrapped(ctx, (_chainObject18 = state.failure, _chainObject18 === null || _chainObject18 === void 0 ? void 0 : _chainObject18.message) || '这一班没有完成。', 26, 126, 306, 15, C.ink, 24, 3);
-        wrapped(ctx, rewardMessage || `可续摊一次：炉火+4、耐心+2锅、现有熟食重新保温。已用 ${state.revives}/1。`, 26, 211, 306, 12, C.coral, 20, 3);
-        const reward = (_chainObject19 = platform.rewards, _chainObject19 === null || _chainObject19 === void 0 ? void 0 : (_chainFunction4 = _chainObject19.getState, _chainFunction4.call(_chainObject19)));
-        button('revive-ad', (_chainObject20 = reward, _chainObject20 === null || _chainObject20 === void 0 ? void 0 : _chainObject20.mode) === 'mock' ? '模拟广告续摊' : '广告续摊预留（未接入）', 24, H - 214, 312, 56, requestRevive, {
-          disabled: state.revives >= 1 || !(_chainObject21 = reward, _chainObject21 === null || _chainObject21 === void 0 ? void 0 : _chainObject21.available),
+        var _chainObject17, _chainObject18, _chainObject19, _chainObject20, _chainFunction4, _chainObject21, _chainObject22;
+        paper('这班先歇一歇', `第 ${state.stage + 1} 班 · ${(_chainObject17 = state.failure, _chainObject17 === null || _chainObject17 === void 0 ? void 0 : _chainObject17.code) === 'fuel' ? '炉火耗尽' : (_chainObject18 = state.failure, _chainObject18 === null || _chainObject18 === void 0 ? void 0 : _chainObject18.code) === 'cold' ? '早餐放凉了' : '排队安排失误'}`);
+        wrapped(ctx, (_chainObject19 = state.failure, _chainObject19 === null || _chainObject19 === void 0 ? void 0 : _chainObject19.message) || '这一班没有完成。', 26, 126, 306, 15, C.ink, 24, 3);
+        wrapped(ctx, rewardMessage || `可续摊一次：炉火+4、耐心+25秒及2锅、现有熟食重新保温。已用 ${state.revives}/1。`, 26, 211, 306, 12, C.coral, 20, 3);
+        const reward = (_chainObject20 = platform.rewards, _chainObject20 === null || _chainObject20 === void 0 ? void 0 : (_chainFunction4 = _chainObject20.getState, _chainFunction4.call(_chainObject20)));
+        button('revive-ad', (_chainObject21 = reward, _chainObject21 === null || _chainObject21 === void 0 ? void 0 : _chainObject21.mode) === 'mock' ? '模拟广告续摊' : '广告续摊预留（未接入）', 24, H - 214, 312, 56, requestRevive, {
+          disabled: state.revives >= 1 || !(_chainObject22 = reward, _chainObject22 === null || _chainObject22 === void 0 ? void 0 : _chainObject22.available),
           fill: '#e7cda1',
           color: C.ink,
           size: 15
@@ -1922,13 +1960,13 @@
           bold: true
         });
       } else if (screen === 'reward') {
-        var _chainObject22, _chainFunction5, _chainObject23;
-        const mock = (_chainObject22 = platform.rewards, _chainObject22 === null || _chainObject22 === void 0 ? void 0 : (_chainFunction5 = _chainObject22.getState, _chainObject23 = _chainFunction5.call(_chainObject22), _chainObject23.mode)) === 'mock';
+        var _chainObject23, _chainFunction5, _chainObject24;
+        const mock = (_chainObject23 = platform.rewards, _chainObject23 === null || _chainObject23 === void 0 ? void 0 : (_chainFunction5 = _chainObject23.getState, _chainObject24 = _chainFunction5.call(_chainObject23), _chainObject24.mode)) === 'mock';
         paper(mock ? '模拟广告 · 非真实广告' : '正在请求激励视频', mock ? '测试入口，无真实广告' : '仅完整观看后的关闭回调可以续摊');
         wrapped(ctx, '只有选择“模拟完整看完”才续摊。关闭、失败或切换新一班都不会领取奖励。', 26, 130, 306, 14, C.ink, 23, 3);
         if (mock) [['completed', '模拟完整看完'], ['cancelled', '模拟提前关闭'], ['unavailable', '模拟无填充'], ['error', '模拟异常']].forEach(([status, title], i) => button(`mock-${status}`, title, 24 + i % 2 * 162, 216 + Math.floor(i / 2) * 70, 150, 60, () => {
-          var _chainObject24, _chainFunction6;
-          return _chainObject24 = platform.rewards, _chainObject24 === null || _chainObject24 === void 0 ? void 0 : (_chainFunction6 = _chainObject24.resolveMock, _chainFunction6 === null || _chainFunction6 === void 0 ? void 0 : _chainFunction6.call(_chainObject24, status));
+          var _chainObject25, _chainFunction6;
+          return _chainObject25 = platform.rewards, _chainObject25 === null || _chainObject25 === void 0 ? void 0 : (_chainFunction6 = _chainObject25.resolveMock, _chainFunction6 === null || _chainFunction6 === void 0 ? void 0 : _chainFunction6.call(_chainObject25, status));
         }, {
           fill: status === 'completed' ? C.green : '#e7cda1',
           color: status === 'completed' ? C.paper : C.ink,
@@ -1938,8 +1976,8 @@
           fill: '#e7cda1'
         });
         button('reward-cancel', '不看，回到刚才', 24, H - 78, 312, 56, () => {
-          var _chainObject25, _chainFunction7;
-          _chainObject25 = platform.rewards, _chainObject25 === null || _chainObject25 === void 0 ? void 0 : (_chainFunction7 = _chainObject25.cancel, _chainFunction7.call(_chainObject25));
+          var _chainObject26, _chainFunction7;
+          _chainObject26 = platform.rewards, _chainObject26 === null || _chainObject26 === void 0 ? void 0 : (_chainFunction7 = _chainObject26.cancel, _chainFunction7.call(_chainObject26));
           screen = 'failure';
         }, {
           fill: C.green,
@@ -2018,7 +2056,7 @@
         right = Math.max(0, i.right || 0),
         top = Math.max(0, i.top || 0),
         bottom = Math.max(0, i.bottom || 0);
-      zoom = Math.min((size.width - left - right) / W, 1.25);
+      zoom = Math.min((size.width - left - right) / W, (size.height - top - bottom) / 500);
       ox = left + (size.width - left - right - W * zoom) / 2;
       oy = top;
       H = (size.height - top - bottom) / zoom;
@@ -2051,6 +2089,7 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.fillStyle = '#d9bd87';
       ctx.fillRect(0, 0, size.width, size.height);
+      streetArt(ctx, 0, 0, size.width, size.height, state.stage % 5);
       ctx.save();
       ctx.translate(ox, oy);
       ctx.scale(zoom, zoom);
@@ -2061,7 +2100,11 @@
       if (screen === 'play') playView();else modalView();
       ctx.restore();
       if (!paused) {
-        const dt = lastFrame ? Math.min(100, Math.max(0, now - lastFrame)) : 0;
+        const dt = lastFrame ? Math.max(0, now - lastFrame) : 0;
+        if (screen === 'play') dispatch({
+          type: 'TICK',
+          ms: dt
+        });
         if (state.dish.status === 'cooking' && screen === 'play') {
           cookElapsed += dt;
           if (cookElapsed >= (state.dish.cookMs || RECIPES[getOrder(state).recipe].cookMs)) dispatch({
@@ -2078,7 +2121,7 @@
       draw(lastFrame);
     }
     unsubscribers.push(platform.onPointer(event => {
-      var _chainObject26, _chainObject27, _chainObject28;
+      var _chainObject27, _chainObject28, _chainObject29;
       if (paused || !alive) return;
       const x = (event.x - ox) / zoom,
         y = (event.y - oy) / zoom;
@@ -2089,9 +2132,9 @@
         x,
         y
       } : null;
-      if (event.type === 'move' && (_chainObject26 = pointerDown, _chainObject26 === null || _chainObject26 === void 0 ? void 0 : _chainObject26.pointer) === event.id && Math.hypot(x - pointerDown.x, y - pointerDown.y) * zoom > 12) pointerDown.moved = true;
-      if (event.type === 'cancel' && (_chainObject27 = pointerDown, _chainObject27 === null || _chainObject27 === void 0 ? void 0 : _chainObject27.pointer) === event.id) pointerDown = null;
-      if (event.type === 'up' && (_chainObject28 = pointerDown, _chainObject28 === null || _chainObject28 === void 0 ? void 0 : _chainObject28.pointer) === event.id) {
+      if (event.type === 'move' && (_chainObject27 = pointerDown, _chainObject27 === null || _chainObject27 === void 0 ? void 0 : _chainObject27.pointer) === event.id && Math.hypot(x - pointerDown.x, y - pointerDown.y) * zoom > 12) pointerDown.moved = true;
+      if (event.type === 'cancel' && (_chainObject28 = pointerDown, _chainObject28 === null || _chainObject28 === void 0 ? void 0 : _chainObject28.pointer) === event.id) pointerDown = null;
+      if (event.type === 'up' && (_chainObject29 = pointerDown, _chainObject29 === null || _chainObject29 === void 0 ? void 0 : _chainObject29.pointer) === event.id) {
         const start = pointerDown;
         pointerDown = null;
         if (hit && !start.moved && start.id === hit.id && Math.hypot(x - start.x, y - start.y) * zoom <= 12) {
@@ -2123,14 +2166,14 @@
     draw();
     return {
       destroy() {
-        var _chainObject29, _chainFunction8;
+        var _chainObject30, _chainFunction8;
         alive = false;
-        _chainObject29 = platform.rewards, _chainObject29 === null || _chainObject29 === void 0 ? void 0 : (_chainFunction8 = _chainObject29.cancel, _chainFunction8.call(_chainObject29));
+        _chainObject30 = platform.rewards, _chainObject30 === null || _chainObject30 === void 0 ? void 0 : (_chainFunction8 = _chainObject30.cancel, _chainFunction8.call(_chainObject30));
         platform.cancelFrame(frameId);
         unsubscribers.forEach(fn => fn());
       },
       inspect() {
-        var _chainObject30, _chainFunction9;
+        var _chainObject31, _chainFunction9;
         return JSON.parse(JSON.stringify({
           state,
           screen,
@@ -2141,7 +2184,7 @@
           sidebarMessage,
           rewardPending: !!rewardPending,
           rewardMessage,
-          rewardState: (_chainObject30 = platform.rewards, _chainObject30 === null || _chainObject30 === void 0 ? void 0 : (_chainFunction9 = _chainObject30.getState, _chainFunction9.call(_chainObject30))),
+          rewardState: (_chainObject31 = platform.rewards, _chainObject31 === null || _chainObject31 === void 0 ? void 0 : (_chainFunction9 = _chainObject31.getState, _chainFunction9.call(_chainObject31))),
           buttons: buttons.map(({
             id,
             x,
@@ -2198,17 +2241,19 @@
       }
     };
     let size;
-    function resize() {
+    function resize(event) {
       const info = api.getSystemInfoSync();
-      const width = info.windowWidth || info.screenWidth,
-        height = info.windowHeight || info.screenHeight;
+      const resized = event && event.size || {};
+      const width = resized.windowWidth || info.screenWidth || info.windowWidth,
+        height = resized.windowHeight || info.screenHeight || info.windowHeight;
       const safe = info.safeArea || {};
       let top = Math.max(0, Number(safe.top) || 0, (Number(info.statusBarHeight) || 0) + 48);
-      if (typeof api.getMenuButtonBoundingClientRect === 'function') {
+      const menuGetter = api.getMenuButtonLayout || api.getMenuButtonBoundingClientRect;
+      if (typeof menuGetter === 'function') {
         try {
-          var _chainObject31;
-          const menu = api.getMenuButtonBoundingClientRect();
-          if (Number.isFinite((_chainObject31 = menu, _chainObject31 === null || _chainObject31 === void 0 ? void 0 : _chainObject31.bottom))) top = Math.max(top, menu.bottom + 8);
+          const menu = menuGetter.call(api);
+          const bottom = menu && (menu.bottom || menu.top + menu.height);
+          if (Number.isFinite(bottom)) top = Math.max(top, bottom + 8);
         } catch (_ignoredError4) {}
       }
       const safeInsets = {
@@ -2233,16 +2278,20 @@
       });
     }
     resize();
+    bind('onWindowResize', 'offWindowResize', resize);
     for (const [suffix, type] of [['Start', 'down'], ['Move', 'move'], ['End', 'up'], ['Cancel', 'cancel']]) {
       bind('onTouch' + suffix, 'offTouch' + suffix, event => {
         var _chainObject32;
         const touches = (_chainObject32 = event.changedTouches, _chainObject32 === null || _chainObject32 === void 0 ? void 0 : _chainObject32.length) ? event.changedTouches : event.touches || [];
-        touches.forEach(touch => emit('pointer', {
-          type,
-          x: touch.clientX,
-          y: touch.clientY,
-          id: touch.identifier
-        }));
+        touches.forEach(touch => {
+          var _nullish6, _nullish7;
+          return emit('pointer', {
+            type,
+            x: (_nullish6 = touch.clientX, _nullish6 === null || _nullish6 === void 0 ? touch.x : _nullish6),
+            y: (_nullish7 = touch.clientY, _nullish7 === null || _nullish7 === void 0 ? touch.y : _nullish7),
+            id: touch.identifier
+          });
+        });
       });
     }
     let muted = false;
@@ -2509,8 +2558,8 @@
               finish(session, complete ? 'completed' : 'cancelled');
             };
             session.error = err => {
-              var _chainObject34, _chainObject35, _nullish4;
-              return finish(session, Number((_nullish4 = (_chainObject34 = err, _chainObject34 === null || _chainObject34 === void 0 ? void 0 : _chainObject34.errCode), _nullish4 === null || _nullish4 === void 0 ? (_chainObject35 = err, _chainObject35 === null || _chainObject35 === void 0 ? void 0 : _chainObject35.errNo) : _nullish4)) === 1004 ? 'unavailable' : 'error');
+              var _chainObject34, _chainObject35, _nullish8;
+              return finish(session, Number((_nullish8 = (_chainObject34 = err, _chainObject34 === null || _chainObject34 === void 0 ? void 0 : _chainObject34.errCode), _nullish8 === null || _nullish8 === void 0 ? (_chainObject35 = err, _chainObject35 === null || _chainObject35 === void 0 ? void 0 : _chainObject35.errNo) : _nullish8)) === 1004 ? 'unavailable' : 'error');
             };
             session.ad.onClose(session.close);
             session.ad.onError(session.error);

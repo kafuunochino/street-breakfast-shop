@@ -31,7 +31,7 @@ const TUTORIAL_STAGES = [
     order('qiao', 'cheese', false, 'soft', 'bag', '蛋饼不要葱，普通火候，带回家吃。'),
     order('lan', 'pancake', false, 'crisp', 'plate', '还是不吃葱。今天煎饼想尝尝焦脆的。')
   ] },
-  { title: '早高峰不慌', time: '07:10', weather: '微风 · 20°', note: '街角热闹起来。没有倒计时催你，认真听清每一份心愿。', ending: '阿早拍了拍保温箱：“以后这条街的早餐推荐，就写你家了。”', target: 360, orders: [
+  { title: '早高峰不慌', time: '07:10', weather: '微风 · 20°', note: '街角热闹起来。耐心倒计时开始了，教学班留足时间，认真听清每一份心愿。', ending: '阿早拍了拍保温箱：“以后这条街的早餐推荐，就写你家了。”', target: 360, orders: [
     order('zao', 'rice', true, 'crisp', 'bag', '赶时间！饭团加葱、煎脆一点，打包。'),
     order('man', 'pancake', false, 'crisp', 'bag', '煎饼不要葱，要脆的。我得带去学校！'),
     order('zhou', 'cheese', true, 'soft', 'plate', '今天换芝士蛋饼，加点葱，普通火候。'),
@@ -69,17 +69,20 @@ function createShift(index) {
   });
   const efficient=index>=20;let cost=0,last=null;for(const i of plan){const t=orders[i].texture;cost+=efficient&&last===t?1:2;last=t;}
   const fuel=index<10?null:cost+(index<20?4:index<25?2:index<40?1:0);
-  return {title:`${SHIFT_THEMES[chapter]} · ${index%10+1}`,time:`${String(6+Math.floor(index/15)).padStart(2,'0')}:${String((index*7)%60).padStart(2,'0')}`,weather:index%4===3?'细雨':'晴暖',note:index<10?'街坊会一起到店，可点头像切换订单。这几班没有失败压力。':index<20?'每开一锅，排队耐心减少一格。先照顾急客，放错食材可随时重做。':index<30?'同一火候连锅只花1格炉火，换火候花2格。省火还是先做急单，由你选择。':'连号同桌单要一起上：先做一份放保温位，再做另一份。保温最多等2锅，别让早餐凉了。',ending:index<20?'摊前多了熟悉的笑声，忙碌也渐渐有了节奏。':index<40?'一口锅照顾好一桌人，细心比手快更重要。':'高峰散去，街坊把空盘叠好。今天又是热气腾腾的一天。',target:n*90,orders,queueSize:index<10?2:3,fuel,efficient,holding:index>=30,freshness:2,referencePlan:plan,chapter};
+  return {title:`${SHIFT_THEMES[chapter]} · ${index%10+1}`,time:`${String(6+Math.floor(index/15)).padStart(2,'0')}:${String((index*7)%60).padStart(2,'0')}`,weather:index%4===3?'细雨':'晴暖',note:index<10?'街坊会一起到店，可点头像切换订单。顾客会实时等候，先看秒数再动手。':index<20?'秒数耗尽会失去顾客，开锅次数也要安排。先照顾急客，放错食材可随时重做。':index<30?'同一火候连锅只花1格炉火，换火候花2格。省火还是先做急单，由你选择。':'连号同桌单要一起上：先做一份放保温位，再做另一份。保温最多等2锅，别让早餐凉了。',ending:index<20?'摊前多了熟悉的笑声，忙碌也渐渐有了节奏。':index<40?'一口锅照顾好一桌人，细心比手快更重要。':'高峰散去，街坊把空盘叠好。今天又是热气腾腾的一天。',target:n*90,orders,queueSize:index<10?2:3,fuel,efficient,holding:index>=30,freshness:2,referencePlan:plan,chapter};
 }
 export const STAGES = Object.freeze([...TUTORIAL_STAGES.map((s,index)=>({...s,queueSize:1,fuel:null,efficient:false,holding:false,freshness:null,referencePlan:s.orders.map((_,i)=>i),chapter:0})),...Array.from({length:45},(_,i)=>createShift(i+5))]);
 export function visibleOrders(state) {
   return STAGES[state.stage].orders.map((o,index)=>({...o,index,id:`${state.stage}:${index}`,due:o.due==null?null:Math.max(o.due,(state.arrivals?.[index]??state.turn)+(o.pair!=null?2:1))})).filter(o=>!state.servedIds.includes(o.id)).slice(0,STAGES[state.stage].queueSize);
 }
+export function patienceBudgetMs(stage){return (stage<5?70-stage*5:stage<10?48:Math.max(24,38-Math.floor((stage-10)/3)))*1000;}
+export function patienceSeconds(state,order){const deadline=state.timeDeadlines?.[order.index??state.orderIndex];return Math.max(0,Math.ceil(((deadline??((state.elapsedMs||0)+patienceBudgetMs(state.stage)))-(state.elapsedMs||0))/1000));}
+function registerTimers(state){const timeDeadlines={...state.timeDeadlines};visibleOrders(state).forEach((o,rank)=>{if(timeDeadlines[o.index]===undefined)timeDeadlines[o.index]=(state.elapsedMs||0)+patienceBudgetMs(state.stage)*(rank+1+(o.pair!=null?1:0));});return {...state,timeDeadlines};}
 export function patienceLeft(state,order) {return order?.due===null||order?.due===undefined?null:Math.max(0,order.due+state.deadlineBonus-state.turn);}
 export function fireCost(state,texture=state.dish.texture) {return STAGES[state.stage].efficient&&state.lastHeat===texture?1:2;}
 export function freshLeft(state,dish=state.heldDish) {return !dish||dish.cookedAt===undefined||!STAGES[state.stage].holding?null:Math.max(-1,STAGES[state.stage].freshness-(state.turn-dish.cookedAt));}
 export function initialState(stage=0,runId=1) {
- const s=tutorialState(stage);return {...s,runId:Number.isSafeInteger(runId)&&runId>0?runId:1,turn:0,fuel:STAGES[s.stage].fuel,lastHeat:null,deadlineBonus:0,heldDish:null,failure:null,failureId:0,revives:0,toolsUsed:{fuel:0,tea:0},arrivals:Object.fromEntries(Array.from({length:STAGES[s.stage].queueSize},(_,i)=>[i,0]))};
+ const s=tutorialState(stage);return registerTimers({...s,elapsedMs:0,timeDeadlines:{},runId:Number.isSafeInteger(runId)&&runId>0?runId:1,turn:0,fuel:STAGES[s.stage].fuel,lastHeat:null,deadlineBonus:0,heldDish:null,failure:null,failureId:0,revives:0,toolsUsed:{fuel:0,tea:0},arrivals:Object.fromEntries(Array.from({length:STAGES[s.stage].queueSize},(_,i)=>[i,0]))});
 }
 
 export function getOrder(state) {
@@ -175,21 +178,27 @@ export function stageStars(state) {
   return state.mistakes === 0 ? 3 : state.score >= STAGES[state.stage].target ? 2 : 1;
 }
 
-function registerArrivals(state){const arrivals={...state.arrivals};for(const o of visibleOrders(state))if(arrivals[o.index]===undefined)arrivals[o.index]=state.turn;return {...state,arrivals};}
+function registerArrivals(state){const arrivals={...state.arrivals};for(const o of visibleOrders(state))if(arrivals[o.index]===undefined)arrivals[o.index]=state.turn;return registerTimers({...state,arrivals});}
 function failed(state,code,message) {return {...state,phase:'failed',failure:{code,message},failureId:state.failureId+1,feedback:message,feedbackType:'error'};}
 export function reduce(state,action) {
  if(!state||!action||typeof action.type!=='string')return state;
  const stage=STAGES[state.stage];
+ if(action.type==='TICK'){
+  if(!['playing','served'].includes(state.phase)||!Number.isFinite(action.ms)||action.ms<=0)return state;
+  let next=registerTimers(state);next={...next,elapsedMs:next.elapsedMs+Math.floor(action.ms)};
+  const expired=visibleOrders(next).find(o=>next.timeDeadlines[o.index]<=next.elapsedMs);
+  return expired?failed(next,'timeout',`${CUSTOMERS[expired.customer].name}等候超时了。先照顾红色倒计时的顾客；可免费重开。`):next;
+ }
  if(action.type==='RESTART_STAGE'){const next=initialState(state.stage,state.runId+1);next.dish.token=state.dish.token+1;return next;}
  if(action.type==='NEXT_STAGE'){if(state.phase!=='stageComplete'||state.stage>=49)return state;const next=initialState(state.stage+1,state.runId+1);next.dish.token=state.dish.token+1;return next;}
  if(action.type==='REVIVE'){
   if(state.phase!=='failed'||state.revives>=1||action.runId!==state.runId||action.failureId!==state.failureId||typeof action.requestId!=='string'||!action.requestId||!['coins','completed-ad'].includes(action.source))return state;
   const dish=state.dish.status==='cooking'?{...emptyDish(),token:state.dish.token+1}:{...state.dish,...(state.dish.status==='cooked'?{cookedAt:state.turn}:{})};
-  return {...state,phase:'playing',failure:null,revives:1,fuel:state.fuel===null?null:state.fuel+4,deadlineBonus:state.deadlineBonus+2,dish,heldDish:state.heldDish?{...state.heldDish,cookedAt:state.turn}:null,feedback:'街坊帮忙续摊：炉火 +4，耐心 +2 锅，熟食重新保温。本班仅一次。',feedbackType:'success'};
+  return {...state,phase:'playing',failure:null,revives:1,fuel:state.fuel===null?null:state.fuel+4,deadlineBonus:state.deadlineBonus+2,timeDeadlines:Object.fromEntries(Object.entries(state.timeDeadlines).map(([id,t])=>[id,Math.max(t,state.elapsedMs)+25000])),dish,heldDish:state.heldDish?{...state.heldDish,cookedAt:state.turn}:null,feedback:'街坊帮忙续摊：炉火 +4，耐心 +25 秒及2锅，熟食重新保温。本班仅一次。',feedbackType:'success'};
  }
  if(action.type==='USE_TOOL'){
   if(state.phase!=='playing'||state.stage<10||!['fuel','tea'].includes(action.kind)||state.toolsUsed[action.kind]>=1)return state;
-  return {...state,fuel:action.kind==='fuel'&&state.fuel!==null?state.fuel+3:state.fuel,deadlineBonus:state.deadlineBonus+(action.kind==='tea'?2:0),toolsUsed:{...state.toolsUsed,[action.kind]:1},feedback:action.kind==='fuel'?'小炭包：炉火 +3，本班已用。':'街坊茶：所有待客耐心 +2 锅，本班已用。',feedbackType:'success'};
+  return {...state,fuel:action.kind==='fuel'&&state.fuel!==null?state.fuel+3:state.fuel,deadlineBonus:state.deadlineBonus+(action.kind==='tea'?2:0),timeDeadlines:action.kind==='tea'?Object.fromEntries(Object.entries(state.timeDeadlines).map(([id,t])=>[id,t+20000])):state.timeDeadlines,toolsUsed:{...state.toolsUsed,[action.kind]:1},feedback:action.kind==='fuel'?'小炭包：炉火 +3，本班已用。':'街坊茶：所有待客耐心 +20 秒及2锅，本班已用。',feedbackType:'success'};
  }
  if(action.type==='NEXT_ORDER'&&state.stage>=5){
   if(state.phase!=='served')return state;
@@ -226,7 +235,8 @@ export function reduce(state,action) {
    const bonus=100+Math.min(first.combo,4)*10;return registerArrivals({...first,score:first.score+bonus,combo:first.combo+1,servedIds:[...first.servedIds,partner.id],heldDish:null,feedback:`同桌一起吃！两份热餐已交付。`,feedbackType:'success'});
   }
  }
- const next=reduceClassic(state,action);
+ let next=reduceClassic(state,action);
+ if(action.type==='NEXT_ORDER'&&next!==state)next=registerTimers(next);
  if(action.type==='SERVE'&&next.phase==='served'&&next!==state)return registerArrivals(next);
  if(action.type==='CLEAR'&&state.stage>=10&&next!==state&&state.phase==='playing')return {...next,feedback:'已重新备料，不扣分；开过的炉火与排队锅次不会倒退。当前顾客仍在。'};
  return next;

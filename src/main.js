@@ -1,4 +1,4 @@
-import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars, visibleOrders, patienceLeft, fireCost, freshLeft, allocateRun, buyTool, spendTool, coinRevive, TOOL_COSTS, recoverAbandonedRun } from '../game.js';
+import { INGREDIENTS, RECIPES, CUSTOMERS, STAGES, initialState, getOrder, requiredIngredients, dishNeedsRestart, reduce, parseProgress, recordStage, stageStars, visibleOrders, patienceLeft, patienceSeconds, patienceBudgetMs, fireCost, freshLeft, allocateRun, buyTool, spendTool, coinRevive, TOOL_COSTS, recoverAbandonedRun } from '../game.js';
 import { C, roundRect, circle, ellipse, line, poly, label, wrapped, ingredientArt, foodArt, avatar, streetArt } from './canvas-art.js';
 
 const SAVE_KEY = 'street-breakfast-shop:progress:v1';
@@ -62,11 +62,12 @@ export function startGame(platform) {
     streetArt(ctx,0,56,W,layout.queueH,state.stage%5);
     const waiting=visibleOrders(state);const shown=state.stage<5?[{...order,index:state.orderIndex}]:state.phase==='served'?[{...order,index:state.orderIndex},...waiting.slice(0,2)]:waiting.length?waiting:[{...order,index:state.orderIndex}];
     shown.slice(0,3).forEach((o,i)=>{
-      const x=12+i*114,y=58,left=patienceLeft(state,o),chosen=o.index===state.orderIndex;
-      button(`order-${o.index}`,'',x,y,108,layout.queueH-4,()=>dispatch({type:'SELECT_ORDER',index:o.index}),{fill:chosen?'#f9e4ad':'#e8d1a5',stroke:left!==null&&left<=1?C.coral:chosen?'#975335':'#ab8862',disabled:state.phase!=='playing'||state.dish.status==='cooking'||state.stage<5,radius:5,dimDisabled:false});
+      const x=12+i*114,y=58,left=patienceLeft(state,o),seconds=patienceSeconds(state,o),urgent=seconds<=10,chosen=o.index===state.orderIndex;
+      button(`order-${o.index}`,'',x,y,108,layout.queueH-4,()=>dispatch({type:'SELECT_ORDER',index:o.index}),{fill:chosen?'#f9e4ad':'#e8d1a5',stroke:urgent?C.coral:chosen?'#975335':'#ab8862',disabled:state.phase!=='playing'||state.dish.status==='cooking'||state.stage<5,radius:5,dimDisabled:false});
       const c=CUSTOMERS[o.customer],bounce=chosen&&state.phase==='served'?Math.sin(artTime/90)*2:0;
-      avatar(ctx,o.customer,x+23,y+23+bounce,c.color,36,state.phase==='served'&&chosen?'happy':left!==null&&left<=1?'urgent':'calm',artTime);label(ctx,c.name,x+47,y+15,12,C.ink,'700');label(ctx,left===null?'慢慢来':`余 ${left} 锅`,x+47,y+35,12,left!==null&&left<=1?C.coral:C.green,'700');
-      if(layout.queueH>70){label(ctx,RECIPES[o.recipe].name,x+54,y+62,11,'#755336','400','center');if(left!==null){roundRect(ctx,x+9,y+75,90,4,2,'#cdb486');roundRect(ctx,x+9,y+75,90*Math.min(1,left/5),4,2,left<=1?C.coral:'#6d8f58');}}
+      avatar(ctx,o.customer,x+23,y+23+bounce,c.color,36,state.phase==='served'&&chosen?'happy':urgent?'urgent':'calm',artTime);label(ctx,c.name,x+47,y+15,12,C.ink,'700');label(ctx,`余 ${seconds} 秒`,x+47,y+35,12,urgent?C.coral:C.green,'700');
+      if(left!==null)label(ctx,`开火余 ${left} 锅`,x+54,y+51,9,left<=1?C.coral:'#795b3b','700','center');
+      if(layout.queueH>70){label(ctx,RECIPES[o.recipe].name,x+54,y+65,11,'#755336','400','center');{roundRect(ctx,x+9,y+75,90,4,2,'#cdb486');roundRect(ctx,x+9,y+75,90*Math.min(1,seconds*1000/patienceBudgetMs(state.stage)),4,2,urgent?C.coral:'#6d8f58');}}
     });
     if(state.stage<5){for(let k=1;k<3;k++){const o=stage.orders[state.orderIndex+k];if(!o)continue;const x=12+k*114,c=CUSTOMERS[o.customer];avatar(ctx,o.customer,x+26,81,c.color,32);label(ctx,'下一位',x+51,73,11,'#795b3b');label(ctx,c.name,x+51,91,12,'#795b3b','700');}}
     const y=layout.ticketY;ticket(12,y,336,layout.ticketH);roundRect(ctx,165,y-5,30,10,2,'#b0794a');
@@ -99,7 +100,7 @@ export function startGame(platform) {
     const cooked=state.dish.status==='cooked',cooking=state.dish.status==='cooking';
     label(ctx,cooking?'滋啦滋啦，香气正好':cooked?(dishNeedsRestart(order,state.dish)?'配料不符，可免费重做':'煎好了，去出餐台装好'):'选好火候，再开火',116,Math.min(y+h-12,panY+72),12,cooked&&dishNeedsRestart(order,state.dish)?C.coral:'#694c32','700','center');
     if(cooking){for(let i=0;i<5;i++){const sy=panY-28-((cookElapsed/45+i*9)%38),sx=72+i*19;ctx.beginPath();ctx.moveTo(sx,sy);ctx.bezierCurveTo(sx-9,sy-8,sx+9,sy-12,sx+2,sy-23);ctx.strokeStyle='#fff6dfbb';ctx.lineWidth=2;ctx.stroke();}for(let i=0;i<5;i++)ellipse(ctx,82+i*18,panY+39,4,5+Math.sin(artTime/90+i)*2,'#df9a42');roundRect(ctx,29,panY+53,174,5,2,'#b18f58');roundRect(ctx,29,panY+53,174*Math.min(1,cookElapsed/RECIPES[order.recipe].cookMs),5,2,'#edba58');}
-    if(h>=260){roundRect(ctx,19,y+170,322,h-184,5,'#efd1a0');wrapped(ctx,'这口锅不催你。切换台面也会继续煎，打开摊位菜单则会暂停。',32,y+192,294,13,'#805d38',23,3);}
+    if(h>=260){roundRect(ctx,19,y+170,322,h-184,5,'#efd1a0');wrapped(ctx,'顾客在等，注意红色倒计时。切换台面也会继续煎，打开摊位菜单则会暂停。',32,y+192,294,13,'#805d38',23,3);}
   }
   function serveView(){
     const y=layout.workY,holding=STAGES[state.stage].holding,h=holding?70:Math.min(190,layout.workH-22),disabled=state.phase!=='playing';
@@ -138,13 +139,13 @@ export function startGame(platform) {
       world();streetArt(ctx,0,0,W,Math.min(260,H*.43),state.stage%5);buttons=[];label(ctx,`第 ${state.stage+1} / 50 班 · ${state.stage<5?'入门':state.stage<10?'正常体验':'调度挑战'}`,24,Math.min(295,H*.48),14,'#7d5733');wrapped(ctx,stage.title,24,Math.min(334,H*.55),312,27,C.ink,34,2);wrapped(ctx,stage.note,24,Math.min(380,H*.63),312,13,'#6e4e31',21,4);
       button('open-day',`系好围裙，做 ${stage.orders.length} 份早餐`,24,H-84,312,64,()=>{screen='play';station='prep';},{fill:C.green,color:C.paper,stroke:'#35523d',size:17,bold:true});
     }else if(screen==='menu'){
-      wood(0,0,W,H,true);roundRect(ctx,12,12,336,H-24,8,'#274b3c','#c3975d');buttons=[];label(ctx,'摊位小黑板',29,49,25,'#f6e6bd','700');button('close-menu','返回',280,22,56,56,close,{fill:'#3f6650',color:C.paper,stroke:'#75916c',size:13});
+      wood(0,0,W,H,true);roundRect(ctx,12,12,336,H-24,8,'#274b3c','#c3975d');buttons=[];label(ctx,'摊位小黑板 · 已暂停',29,49,25,'#f6e6bd','700');button('close-menu','返回',280,22,56,56,close,{fill:'#3f6650',color:C.paper,stroke:'#75916c',size:13});
       const items=[['help','老板教学',()=>open('help')],['recipes','翻开配方本',()=>open('recipes')],['chapters','50班手账',()=>{chapterPage=Math.floor(state.stage/6);open('chapters');}],['tools','街坊工具箱',()=>open('tools')],['sound',progress.sound?'声音：开':'声音：关',sound],['restart','重开这一班',()=>open('restart')]];
       items.forEach(([id,text,fn],i)=>button(id,text,24+(i%2)*162,110+Math.floor(i/2)*80,150,70,fn,{fill:'#3f6650',color:C.paper,stroke:'#6b8969',size:16}));
       if(sidebarState.available)button('sidebar-open','从侧边栏再来',24,358,312,56,()=>{sidebarMessage='';open('sidebar');},{fill:'#3f6650',color:C.paper,stroke:'#6b8969'});
     }else if(screen==='help'){
       paper('三个台面，一份心意','老板手写的开摊贴士');
-      const tips=[['先看队伍','点顾客切单；余锅是还能等几次开火，不是读秒。'],['铁锅台','选火候、开火。换台面不打断加热。'],['出餐台','选盘子或纸袋，确认口味后递给客人。'],['高峰有章法','11班起看余锅和炉火；31班起同桌单先保温再一起上。']];tips.forEach(([a,b],i)=>{label(ctx,a,29,126+i*70,16,C.coral,'700');wrapped(ctx,b,29,151+i*70,300,13,C.ink,20,2);});backButton('close-help','系好围裙，知道啦');
+      const tips=[['先看队伍','点顾客切单；看实时秒数，红色急客优先；到零本班失败。'],['铁锅台','选火候、开火。换台面不打断加热。'],['出餐台','选盘子或纸袋，确认口味后递给客人。'],['高峰有章法','菜单/配方本及切后台暂停计时；31班起同桌一起上。']];tips.forEach(([a,b],i)=>{label(ctx,a,29,126+i*70,16,C.coral,'700');wrapped(ctx,b,29,151+i*70,300,13,C.ink,20,2);});backButton('close-help','系好围裙，知道啦');
     }else if(screen==='recipes'){
       paper('摊主的配方本','葱花按票据另加');Object.values(RECIPES).forEach((r,i)=>{const y=119+i*105;line(ctx,26,y+78,334,y+78,'#d9b98a');foodArt(ctx,{ingredients:r.ingredients,status:'cooked',texture:'soft'},77,y+31,.59);label(ctx,r.name,137,y+11,17,C.ink,'700');wrapped(ctx,r.ingredients.map(id=>INGREDIENTS[id]).join(' + '),137,y+38,190,13,'#8b6541',21,2);});backButton('close-recipes','合上配方本');
     }else if(screen==='chapters'){
@@ -153,12 +154,12 @@ export function startGame(platform) {
       button('page-prev','上一页',24,338,150,56,()=>chapterPage=Math.max(0,chapterPage-1),{disabled:chapterPage===0,fill:'#e8cf9f'});button('page-next','下一页',186,338,150,56,()=>chapterPage=Math.min(8,chapterPage+1),{disabled:chapterPage===8,fill:'#e8cf9f'});backButton('close-chapters','收好手账，回到刚才');
     }else if(screen==='tools'){
       paper('街坊工具箱',`金币 ${progress.coins} · 只在游戏内使用，没有现金购买`);
-      for(const [i,kind] of ['fuel','tea'].entries()){const y=124+i*112;label(ctx,kind==='fuel'?'小炭包：炉火 +3':'街坊茶：耐心 +2 锅',28,y,16,C.ink,'700');label(ctx,`库存 ${progress.tools[kind]}/3 · 每班最多用1个 · 11班起可用`,28,y+24,10,'#8c765a');button(`buy-${kind}`,`18金币买1个`,24,y+43,150,56,()=>{const next=buyTool(progress,kind);if(next!==progress&&save(next))progress=next;},{disabled:progress.coins<18||progress.tools[kind]>=3,fill:'#e4bb6f'});button(`use-${kind}`,'这班使用',186,y+43,150,56,()=>useTool(kind),{disabled:state.phase!=='playing'||state.stage<10||!progress.tools[kind]||state.toolsUsed[kind]>=1,fill:C.green,color:C.paper});}
+      for(const [i,kind] of ['fuel','tea'].entries()){const y=124+i*112;label(ctx,kind==='fuel'?'小炭包：炉火 +3':'街坊茶：耐心 +20秒及2锅',28,y,16,C.ink,'700');label(ctx,`库存 ${progress.tools[kind]}/3 · 每班最多用1个 · 11班起可用`,28,y+24,10,'#8c765a');button(`buy-${kind}`,`18金币买1个`,24,y+43,150,56,()=>{const next=buyTool(progress,kind);if(next!==progress&&save(next))progress=next;},{disabled:progress.coins<18||progress.tools[kind]>=3,fill:'#e4bb6f'});button(`use-${kind}`,'这班使用',186,y+43,150,56,()=>useTool(kind),{disabled:state.phase!=='playing'||state.stage<10||!progress.tools[kind]||state.toolsUsed[kind]>=1,fill:C.green,color:C.paper});}
       wrapped(ctx,'未通关就刷新或重开，会退回本班所用工具和续摊金币；通关后正常消耗。',28,366,302,12,'#8c765a',18,2);backButton('close-tools');
     }else if(screen==='failure'){
       paper('这班先歇一歇',`第 ${state.stage+1} 班 · ${state.failure?.code==='fuel'?'炉火耗尽':state.failure?.code==='cold'?'早餐放凉了':'排队安排失误'}`);
       wrapped(ctx,state.failure?.message||'这一班没有完成。',26,126,306,15,C.ink,24,3);
-      wrapped(ctx,rewardMessage||`可续摊一次：炉火+4、耐心+2锅、现有熟食重新保温。已用 ${state.revives}/1。`,26,211,306,12,C.coral,20,3);
+      wrapped(ctx,rewardMessage||`可续摊一次：炉火+4、耐心+25秒及2锅、现有熟食重新保温。已用 ${state.revives}/1。`,26,211,306,12,C.coral,20,3);
       const reward=platform.rewards?.getState();button('revive-ad',reward?.mode==='mock'?'模拟广告续摊':'广告续摊预留（未接入）',24,H-214,312,56,requestRevive,{disabled:state.revives>=1||!reward?.available,fill:'#e7cda1',color:C.ink,size:15});
       button('revive-coins',`30金币续摊 · 现有 ${progress.coins}`,24,H-146,312,56,reviveWithCoins,{disabled:state.revives>=1||progress.coins<30,fill:'#e2b664',size:15});button('retry-free','免费重开这一班',24,H-78,312,56,()=>beginStage(state.stage),{fill:C.green,color:C.paper,size:17,bold:true});
     }else if(screen==='reward'){
@@ -181,13 +182,13 @@ export function startGame(platform) {
   }
   function metrics(){
     size=platform.getSize();const i=size.safeInsets||{},left=Math.max(0,i.left||0),right=Math.max(0,i.right||0),top=Math.max(0,i.top||0),bottom=Math.max(0,i.bottom||0);
-    zoom=Math.min((size.width-left-right)/W,1.25);ox=left+(size.width-left-right-W*zoom)/2;oy=top;H=(size.height-top-bottom)/zoom;
+    zoom=Math.min((size.width-left-right)/W,(size.height-top-bottom)/500);ox=left+(size.width-left-right-W*zoom)/2;oy=top;H=(size.height-top-bottom)/zoom;
     const compact=H<600,queueH=compact?60:90,ticketY=56+queueH+4,ticketH=compact?80:102,tabsY=ticketY+ticketH+6,workY=tabsY+62;
     layout={queueH,ticketY,ticketH,tabsY,workY,workH:H-80-workY,safeInsets:{left,right,top,bottom}};
   }
   function draw(now=0){
-    if(!alive)return;artTime=now;metrics();const dpr=size.dpr||1;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#d9bd87';ctx.fillRect(0,0,size.width,size.height);ctx.save();ctx.translate(ox,oy);ctx.scale(zoom,zoom);ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();buttons=[];if(screen==='play')playView();else modalView();ctx.restore();
-    if(!paused){const dt=lastFrame?Math.min(100,Math.max(0,now-lastFrame)):0;if(state.dish.status==='cooking'&&screen==='play'){cookElapsed+=dt;if(cookElapsed>=(state.dish.cookMs||RECIPES[getOrder(state).recipe].cookMs))dispatch({type:'COOK_DONE',token:activeToken});}}
+    if(!alive)return;artTime=now;metrics();const dpr=size.dpr||1;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#d9bd87';ctx.fillRect(0,0,size.width,size.height);streetArt(ctx,0,0,size.width,size.height,state.stage%5);ctx.save();ctx.translate(ox,oy);ctx.scale(zoom,zoom);ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();buttons=[];if(screen==='play')playView();else modalView();ctx.restore();
+    if(!paused){const dt=lastFrame?Math.max(0,now-lastFrame):0;if(screen==='play')dispatch({type:'TICK',ms:dt});if(state.dish.status==='cooking'&&screen==='play'){cookElapsed+=dt;if(cookElapsed>=(state.dish.cookMs||RECIPES[getOrder(state).recipe].cookMs))dispatch({type:'COOK_DONE',token:activeToken});}}
     lastFrame=now;if(!paused)frameId=platform.requestFrame(draw);
   }
   function redraw(){if(frameId!==undefined)platform.cancelFrame(frameId);draw(lastFrame);}
