@@ -1,0 +1,38 @@
+{
+  "appid": "ttebf69d4b758f209102",
+  "projectname": "街角早餐铺",
+  "version": "0.3.0",
+  "inputs": [
+    "game.js",
+    "src/canvas-art.js",
+    "src/main.js",
+    "adapters/tt.js",
+    "adapters/douyin-sidebar.js",
+    "adapters/rewarded.js"
+  ],
+  "sourceFiles": {
+    "game.js": "327eb3199565f95c267eb9963fff9547fa0de12c5a988097b5b64cac75bf6675",
+    "src/canvas-art.js": "e497a62f2f48b774f8ff3c2ed685a18aab9a28c4e7424efc2b8fc6292dc66f7e",
+    "src/main.js": "04f695edf1808580e0a8ec4f60187636cc4142fd5a3f1ebe9d1dc290df6e7e33",
+    "adapters/tt.js": "6ea96d0fdac69232e8de5c686ece860d0d9cc0529129ba2484db3e8eb875e1a1",
+    "adapters/douyin-sidebar.js": "09812d4f85060387616f1b135c7311a09a38f27b34b4376a4dd05c16c504b598",
+    "adapters/rewarded.js": "e83bf601d941b7603b5bccbe29354e7a1c894105f1ec3794995d6da372d9acc7",
+    "config/douyin.json": "246c700f3b987f052c691514d70c2c832ce6450d86c6ff38a2a6bd659b2e17fc",
+    "scripts/build-tt.mjs": "aacbfab22a8846722649364af6901266af7083d7efbdf75f28cf8d1ca1f9779f"
+  },
+  "entry": "game.js",
+  "browserAssetsIncluded": false,
+  "officialToolValidated": false,
+  "realPhoneValidated": false,
+  "uploaded": false,
+  "files": {
+    "game.js": "7d54b90602b775138a057c7de15d53dd719410c74d817133990f061e06d73a45",
+    "game.json": "adfce90c444cdbf96dc51598471759bca31feb5e936833b36847f3570fd4bca0",
+    "project.config.json": "0444f0cad07e96fbefbd9ff02278b1163b61ab2900c3a042cad5dc3f14d8fa06",
+    "assets/tap.wav": "5d91b8d5d7e016ed4c42054e607ec700b6e6ef16721b6adc03c14368bc68ce93",
+    "assets/cook.wav": "6bf9c5ad8e7fff39c4b87c2ca269ac2433221c8a1c8d85e17a8eb6dd954630e9",
+    "assets/success.wav": "f6813a83e6c2374ed22bbf32fdb2fe4d4870560dd691427aaafb0d9ecd462dd3",
+    "assets/error.wav": "5b677b5179bb28409c77d22b85fa70c1ee191f026d8e1e4c45b2ce35ed8bac84",
+    "assets/complete.wav": "b00300b288a4c5367db40129e63c4639b635aa2a24dadec66cefaf39677155dd"
+  }
+}

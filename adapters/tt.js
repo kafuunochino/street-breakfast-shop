@@ -12,7 +12,7 @@ export function createTTPlatform(api, scheduler, audioPaths = {}) {
     const info = api.getSystemInfoSync();
     const width = info.windowWidth || info.screenWidth, height = info.windowHeight || info.screenHeight;
     const safe = info.safeArea || {};
-    let top = Math.max(0, Number(safe.top) || 0, Number(info.statusBarHeight) || 0) + 48;
+    let top = Math.max(0, Number(safe.top) || 0, (Number(info.statusBarHeight) || 0) + 48);
     if (typeof api.getMenuButtonBoundingClientRect === 'function') { try { const menu = api.getMenuButtonBoundingClientRect(); if (Number.isFinite(menu?.bottom)) top = Math.max(top, menu.bottom + 8); } catch {} }
     const safeInsets = { top, bottom: Number.isFinite(safe.bottom) ? Math.max(0, height - safe.bottom) : 12, left: Math.max(0, Number(safe.left) || 0), right: Number.isFinite(safe.right) ? Math.max(0, width - safe.right) : 0 };
     const next = { width, height, dpr: Math.min(info.pixelRatio || 1, 3), safeInsets };

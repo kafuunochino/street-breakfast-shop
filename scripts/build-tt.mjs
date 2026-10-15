@@ -1,3 +1,5 @@
+import transformer from './transform-es2018.cjs';
+const { transformES2018 } = transformer;
 /** Fixed-input Demo assembler, not a general-purpose module bundler or transpiler. */
 import { readFile, mkdir, writeFile, copyFile, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -31,7 +33,7 @@ export async function buildDouyin(options = {}) {
   const audio = Object.fromEntries(['tap', 'cook', 'success', 'error', 'complete'].map(name => [name, `assets/${name}.wav`]));
   // Sidebar listener is installed synchronously, before Canvas creation or the game loop.
   const entry = `\nconst sidebar = createDouyinSidebar(tt);\nconst platform = createTTPlatform(tt, { requestAnimationFrame, cancelAnimationFrame }, ${JSON.stringify(audio)});\nplatform.sidebar = sidebar;\nplatform.rewards = createRewardedService();\nstartGame(platform);\n`;
-  const bundle = `(function(){\n'use strict';\n${chunks.join('\n')}${entry}})();\n`;
+  const bundle = transformES2018(`(function(){\n'use strict';\n${chunks.join('\n')}${entry}})();\n`);
   new Script(bundle, { filename: 'game.js' });
   await writeFile(new URL('game.js', output), bundle);
   await writeFile(new URL('game.json', output), JSON.stringify({ deviceOrientation: 'portrait' }, null, 2) + '\n');
