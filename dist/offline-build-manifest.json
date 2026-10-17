@@ -1,12 +1,12 @@
 {
   "version": "0.3.1",
   "file": "breakfast-demo.html",
-  "sha256": "a4566e08e016f814893056401098fde65e8c54262108928d28e6d945bd896231",
-  "bytes": 124009,
+  "sha256": "ee54b49605ed92cb30def208b47800d9069453bc9c5f057971a8b0d511890507",
+  "bytes": 124134,
   "sources": {
     "game.js": "c3660c1c49fdb56110e0633b98f29c046bb14637efd05728ea8e004d0e5202ec",
     "src/canvas-art.js": "e497a62f2f48b774f8ff3c2ed685a18aab9a28c4e7424efc2b8fc6292dc66f7e",
-    "src/main.js": "65e7839f9e431e91fda13ced952bec7eaa9a225b06ed8a556d7f5bea1249f6d0",
+    "src/main.js": "86666b35468a27d7277361fe1f4e357fbb80264677b66a70eb8ac074536a812e",
     "adapters/browser.js": "3e78e20c9ef61c0c7045f1b9edf25253f4170bcc2f44ef5f58e64de4bd0ba233",
     "adapters/rewarded.js": "e83bf601d941b7603b5bccbe29354e7a1c894105f1ec3794995d6da372d9acc7"
   },

@@ -1402,7 +1402,7 @@
       save();
     }
     function button(id, text, x, y, w, h, fn, opts = {}) {
-      var _nullish4, _nullish5;
+      var _nullish4, _nullish5, _nullish6;
       const {
         fill = C.paper,
         color = C.ink,
@@ -1416,6 +1416,7 @@
       roundRect(ctx, x, y + 3, w, h, (_nullish4 = opts.radius, _nullish4 === null || _nullish4 === void 0 ? 7 : _nullish4), '#70432433');
       roundRect(ctx, x, y, w, h, (_nullish5 = opts.radius, _nullish5 === null || _nullish5 === void 0 ? 7 : _nullish5), selected ? '#355f4d' : fill, selected ? '#264a3b' : stroke);
       if (text) label(ctx, text, x + w / 2, y + h / 2, fontSize, selected ? '#fff4d5' : color, opts.bold ? '700' : '400', 'center');
+      if (pointerDown && pointerDown.id === id && !pointerDown.moved && !disabled) roundRect(ctx, x + 2, y + 2, w - 4, h - 4, (_nullish6 = opts.radius, _nullish6 === null || _nullish6 === void 0 ? 7 : _nullish6), '#ffffff30');
       ctx.restore();
       buttons.push({
         id,
@@ -2284,23 +2285,32 @@
         var _chainObject32;
         const touches = (_chainObject32 = event.changedTouches, _chainObject32 === null || _chainObject32 === void 0 ? void 0 : _chainObject32.length) ? event.changedTouches : event.touches || [];
         touches.forEach(touch => {
-          var _nullish6, _nullish7;
+          var _nullish7, _nullish8;
           return emit('pointer', {
             type,
-            x: (_nullish6 = touch.clientX, _nullish6 === null || _nullish6 === void 0 ? touch.x : _nullish6),
-            y: (_nullish7 = touch.clientY, _nullish7 === null || _nullish7 === void 0 ? touch.y : _nullish7),
+            x: (_nullish7 = touch.clientX, _nullish7 === null || _nullish7 === void 0 ? touch.x : _nullish7),
+            y: (_nullish8 = touch.clientY, _nullish8 === null || _nullish8 === void 0 ? touch.y : _nullish8),
             id: touch.identifier
           });
         });
       });
     }
-    let muted = false;
-    const stopAudio = () => sounds.forEach(sound => sound.pause());
+    let muted = false,
+      audioPaused = false,
+      audioDestroyed = false;
+    const safeAudioCall = (sound, method, ...args) => {
+      try {
+        if (typeof sound[method] === 'function') sound[method](...args);
+      } catch (_) {/* A broken optional audio method must not interrupt game lifecycle. */}
+    };
+    const stopAudio = () => sounds.forEach(sound => safeAudioCall(sound, 'pause'));
     bind('onHide', 'offHide', () => {
+      audioPaused = true;
       stopAudio();
       emit('pause');
     });
     bind('onShow', 'offShow', () => {
+      audioPaused = false;
       resize();
       emit('resume');
     });
@@ -2327,7 +2337,7 @@
       },
       audio: {
         play(name) {
-          if (muted || !audioPaths[name] || typeof api.createInnerAudioContext !== 'function') return;
+          if (muted || audioPaused || audioDestroyed || !audioPaths[name] || typeof api.createInnerAudioContext !== 'function') return;
           try {
             let sound = sounds.get(name);
             if (!sound) {
@@ -2337,8 +2347,8 @@
               _callReceiver = sound, _chainFunction0 = _callReceiver.onError, _chainFunction0 === null || _chainFunction0 === void 0 ? void 0 : _chainFunction0.call(_callReceiver, () => {});
               sounds.set(name, sound);
             }
-            sound.seek(0);
-            sound.play();
+            safeAudioCall(sound, 'seek', 0);
+            safeAudioCall(sound, 'play');
           } catch (_ignoredError5) {/* Audio failure must not block play. */}
         },
         setMuted(value) {
@@ -2347,8 +2357,12 @@
         }
       },
       destroy() {
+        if (audioDestroyed) return;
+        audioDestroyed = true;
+        stopAudio();
         removers.forEach(fn => fn());
-        sounds.forEach(sound => sound.destroy());
+        sounds.forEach(sound => safeAudioCall(sound, 'destroy'));
+        sounds.clear();
         Object.values(listeners).forEach(set => set.clear());
       }
     };
@@ -2558,8 +2572,8 @@
               finish(session, complete ? 'completed' : 'cancelled');
             };
             session.error = err => {
-              var _chainObject34, _chainObject35, _nullish8;
-              return finish(session, Number((_nullish8 = (_chainObject34 = err, _chainObject34 === null || _chainObject34 === void 0 ? void 0 : _chainObject34.errCode), _nullish8 === null || _nullish8 === void 0 ? (_chainObject35 = err, _chainObject35 === null || _chainObject35 === void 0 ? void 0 : _chainObject35.errNo) : _nullish8)) === 1004 ? 'unavailable' : 'error');
+              var _chainObject34, _chainObject35, _nullish9;
+              return finish(session, Number((_nullish9 = (_chainObject34 = err, _chainObject34 === null || _chainObject34 === void 0 ? void 0 : _chainObject34.errCode), _nullish9 === null || _nullish9 === void 0 ? (_chainObject35 = err, _chainObject35 === null || _chainObject35 === void 0 ? void 0 : _chainObject35.errNo) : _nullish9)) === 1004 ? 'unavailable' : 'error');
             };
             session.ad.onClose(session.close);
             session.ad.onError(session.error);

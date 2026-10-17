@@ -2,7 +2,7 @@
   "name": "street-breakfast-shop",
   "version": "0.3.1",
   "private": true,
-  "description": "街角早餐铺：有烟火气、有明确口味要求的原创早餐经营小游戏测试原型",
+  "description": "街角早餐铺｜停止维护的早餐经营实验原型（游戏废案）",
   "type": "module",
   "scripts": {
     "test": "node --test",

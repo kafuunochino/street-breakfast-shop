@@ -45,7 +45,7 @@ export function startGame(platform) {
     ctx.save();if(disabled&&opts.dimDisabled!==false)ctx.globalAlpha=.46;
     roundRect(ctx,x,y+3,w,h,opts.radius??7,'#70432433');
     roundRect(ctx,x,y,w,h,opts.radius??7,selected?'#355f4d':fill,selected?'#264a3b':stroke);
-    if(text)label(ctx,text,x+w/2,y+h/2,fontSize,selected?'#fff4d5':color,opts.bold?'700':'400','center');ctx.restore();
+    if(text)label(ctx,text,x+w/2,y+h/2,fontSize,selected?'#fff4d5':color,opts.bold?'700':'400','center');if(pointerDown&&pointerDown.id===id&&!pointerDown.moved&&!disabled)roundRect(ctx,x+2,y+2,w-4,h-4,opts.radius??7,'#ffffff30');ctx.restore();
     buttons.push({id,x,y,w,h,fn,disabled,label:text});
   }
   function wood(x,y,w,h,dark=false){roundRect(ctx,x,y,w,h,4,dark?'#765039':'#c79963');for(let i=0;i<Math.ceil(h/33);i++){line(ctx,x+3,y+i*33+1,x+w-3,y+i*33+1,dark?'#5f3b2a':'#b78651',1);line(ctx,x+9+(i%3)*17,y+i*33+9,x+w-26,y+i*33+9,dark?'#946549':'#d9b07c',1);}}
